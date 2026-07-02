@@ -1,0 +1,27 @@
+/*!
+ * theme-yael.css — Module E: theme tokens, Yael's values.
+ * The token STRUCTURE (names) is the reusable engine slot; these
+ * VALUES are per-project story data (map §6). A new client project
+ * ships its own theme-<name>.css with the same token names.
+ *
+ * Font faces are loaded by the host page (Google Fonts link) — the
+ * theme only names the roles.
+ *
+ * Addition vs production :root — --paper-glow: the paper color as an
+ * r,g,b triplet so caption glow / vignette in scene-player.css can be
+ * theme-driven instead of hardcoding rgba(243,236,224,…).
+ */
+:root {
+  /* palette */
+  --paper:      #f3ece0;
+  --paper-glow: 243, 236, 224;   /* --paper as r,g,b for rgba() use */
+  --ink:        #1f1b15;
+  --ink-soft:   #3a342a;
+  --indigo:     #2d4459;
+  --ochre:      #b87333;
+
+  /* type roles */
+  --serif: 'Frank Ruhl Libre', serif;
+  --sans:  'Heebo', system-ui, sans-serif;
+  --latin: 'Cormorant Garamond', serif;
+}

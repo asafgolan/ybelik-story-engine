@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ybelik · bucket lab — Module B parity gate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="reveal-engine.js"></script>
+<style>
+  :root{
+    --ink:#14110E; --ink-2:#201B16; --ink-3:#2E2822; --line:#3A332B;
+    --paper:#f3ece0;                    /* production stage paper — do not restyle */
+    --fg:#E9E2D4; --mist:#9A9284; --mist-2:#C6BEAF;
+    --shu:#C0432B; --pass:#5F7E5A;
+    --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+    --serif:'Spectral',Georgia,serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--ink); color:var(--fg);
+    font-family:var(--serif); line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    padding:clamp(16px,2.5vw,34px);
+  }
+
+  header{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-bottom:18px}
+  .seal{width:24px;height:24px;border-radius:3px;background:var(--shu);position:relative;flex:none;align-self:center}
+  .seal::after{content:"";position:absolute;inset:5px;border:1.5px solid rgba(255,255,255,.55)}
+  h1{font-size:21px;font-weight:400;letter-spacing:.05em;margin:0}
+  h1 b{font-weight:500}
+  .sub{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--mist);margin-left:auto;align-self:center}
+
+  /* scene nav */
+  .nav{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+  .nav button{font-family:var(--mono)}
+  .arrow{background:var(--ink-2);color:var(--fg);border:1px solid var(--line);width:32px;height:32px;border-radius:3px;cursor:pointer;font-size:14px}
+  .arrow:hover{border-color:var(--mist)}
+  .dots{display:flex;gap:7px}
+  .dot{width:9px;height:9px;border-radius:2px;background:transparent;border:1px solid var(--mist);cursor:pointer;padding:0}
+  .dot.on{background:var(--shu);border-color:var(--shu)}
+  .scene-name{font-style:italic;font-weight:300;color:var(--mist-2);font-size:16px}
+  .replay{
+    margin-left:auto;background:var(--shu);border:1px solid var(--shu);color:#fff;
+    border-radius:3px;padding:8px 22px;font-size:12px;letter-spacing:.08em;cursor:pointer;
+  }
+  .replay:hover{background:#a93a25}
+  .replay[disabled]{opacity:.45;cursor:default}
+  button:focus-visible,.dot:focus-visible{outline:2px solid var(--shu);outline-offset:2px}
+
+  /* twin stages */
+  .stages{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:760px){.stages{grid-template-columns:1fr}}
+  .pane{display:flex;flex-direction:column;gap:8px;min-width:0}
+  .pane .tag{
+    font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--mist);display:flex;justify-content:space-between;gap:8px
+  }
+  .pane .tag b{color:var(--mist-2);font-weight:500}
+  .stage{
+    position:relative;height:min(62vh,560px);background:var(--paper);
+    border-radius:2px;overflow:hidden;
+    box-shadow:0 1px 0 rgba(255,255,255,.12), 0 22px 44px -22px rgba(0,0,0,.8);
+  }
+  .stage .svg-host, .stage .svg-host svg{width:100%;height:100%}
+  .stage .svg-host svg{display:block;object-fit:cover}   /* production sizing */
+  .rp{opacity:0}                                          /* production base rule */
+  .stage .state{
+    position:absolute;inset:0;display:grid;place-items:center;
+    font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:#6b6154;
+    background:var(--paper);transition:opacity .3s ease;pointer-events:none;
+  }
+  .stage .state.hidden{opacity:0}
+  .stage .state.error{color:var(--shu);padding:0 12%;text-align:center;line-height:1.7}
+
+  /* verdict */
+  .verdict{
+    margin-top:16px;background:var(--ink-2);border:1px solid var(--line);border-radius:3px;
+    padding:14px 18px;display:flex;align-items:baseline;gap:22px;flex-wrap:wrap;
+  }
+  .verdict .label{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--mist)}
+  .verdict .delta{font-family:var(--mono);font-size:30px;font-weight:600;color:var(--mist-2)}
+  .verdict .delta.pass{color:var(--pass)}
+  .verdict .delta.fail{color:var(--shu)}
+  .verdict .detail{font-family:var(--mono);font-size:11px;color:var(--mist);line-height:1.9}
+  .verdict .detail b{color:var(--mist-2);font-weight:500}
+
+  .foot{
+    font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--mist);
+    margin-top:16px;padding-top:12px;border-top:1px solid var(--line);line-height:2;
+  }
+  .foot b{color:var(--mist-2);font-weight:500}
+</style>
+</head>
+<body>
+  <header>
+    <div class="seal" aria-hidden="true"></div>
+    <h1>bucket lab <b>·</b> Module B parity gate</h1>
+    <div class="sub">reference (inline, verbatim) vs extracted (RevealEngine + story.json)</div>
+  </header>
+
+  <div class="nav">
+    <button class="arrow" id="prev" aria-label="Previous scene">&#8592;</button>
+    <div class="dots" id="dots"></div>
+    <button class="arrow" id="next" aria-label="Next scene">&#8594;</button>
+    <span class="scene-name" id="sceneName">—</span>
+    <button class="replay" id="replay">replay both ↻</button>
+  </div>
+
+  <div class="stages">
+    <div class="pane">
+      <div class="tag"><span><b>reference</b> — inline logic from index.html</span><span id="refMeta">—</span></div>
+      <div class="stage"><div class="svg-host" id="refHost"></div><div class="state" id="refState">loading…</div></div>
+    </div>
+    <div class="pane">
+      <div class="tag"><span><b>extracted</b> — RevealEngine · story.json</span><span id="engMeta">—</span></div>
+      <div class="stage"><div class="svg-host" id="engHost"></div><div class="state" id="engState">loading…</div></div>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div>
+      <div class="label">delta</div>
+      <div class="delta" id="delta">—</div>
+    </div>
+    <div class="detail" id="detail">replay to measure. gate: ≤ 50 ms and visually indistinguishable.</div>
+  </div>
+
+  <p class="foot">
+    <b>parity:</b> story.json ships at production values (1.6s / power1.out) — default replay is a pure A/B.
+    <b>json-drive gate:</b> edit story.json only (reorder scenes, set a duration to 3.0), reload — the right stage must follow, the left stays production.
+    <b>reduced motion:</b> honored — both stages instant-fill.
+    serve over http (python3 -m http.server), not file://.
+  </p>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ─── fallback descriptor (used only if story.json missing) ─── */
+  var DEFAULT_STORY = {
+    meta: { id:'yael-study-01', style:'sumi-e', mode:'views', engine:'bucket-reveal' },
+    scenes: [
+      { id:'sc-01', name:'quiet sun',  asset:'svg/01-quiet-sun.svg',  enter:{ effect:'bucket-reveal', params:{ duration:1.6, ease:'power1.out' } } },
+      { id:'sc-02', name:'vivid sun',  asset:'svg/02-vivid-sun.svg',  enter:{ effect:'bucket-reveal', params:{ duration:1.6, ease:'power1.out' } } },
+      { id:'sc-03', name:'bird',       asset:'svg/03-bird.svg',       enter:{ effect:'bucket-reveal', params:{ duration:1.6, ease:'power1.out' } } },
+      { id:'sc-04', name:'empty rock', asset:'svg/04-empty-rock.svg', enter:{ effect:'bucket-reveal', params:{ duration:1.6, ease:'power1.out' } } },
+      { id:'sc-05', name:'girl',       asset:'svg/05-girl.svg',       enter:{ effect:'bucket-reveal', params:{ duration:1.6, ease:'power1.out' } } }
+    ]
+  };
+
+  var $ = function(s){ return document.querySelector(s); };
+  var refHost = $('#refHost'), engHost = $('#engHost');
+  var refState = $('#refState'), engState = $('#engState');
+
+  var story = DEFAULT_STORY, usingFallback = true;
+  var cur = 0, busy = false, engine = null;
+  var svgCache = {};
+
+  /* ════════════════════════════════════════════════════════════
+     REFERENCE SIDE — copied VERBATIM from index.html, specialized
+     to a single panel. Do not "improve": this pane exists to be
+     the production behavior. (Rounding happens at the caller,
+     exactly as production's paintPanel does.)
+     ════════════════════════════════════════════════════════════ */
+  var refBuckets = null, refLast = -1, refPaths = 0;
+
+  function refIndex(host){
+    refBuckets = Array.from({ length: 100 }, function(){ return []; });
+    refPaths = 0;
+    host.querySelectorAll('.rp').forEach(function(el){
+      var m = (el.getAttribute('class') || '').match(/b(\d+)/);
+      if (m) { refBuckets[+m[1]].push(el); refPaths++; }
+    });
+    refLast = -1;
+  }
+
+  function refSetLevel(level){
+    var prev = refLast;
+    if (level === prev) return;
+    if (level > prev) {
+      for (var k = prev + 1; k <= level; k++)
+        for (var i = 0; i < refBuckets[k].length; i++) refBuckets[k][i].style.opacity = '1';
+    } else {
+      for (var k2 = prev; k2 > level; k2--)
+        for (var j = 0; j < refBuckets[k2].length; j++) refBuckets[k2][j].style.opacity = '0';
+    }
+    refLast = level;
+  }
+
+  function refPaint(dur){                        /* paintPanel core, captions omitted */
+    return new Promise(function(resolve){
+      var obj = { v: -1 };
+      refSetLevel(-1);
+      gsap.to(obj, {
+        v: 99, duration: dur, ease: 'power1.out',
+        onUpdate:   function(){ refSetLevel(Math.round(obj.v)); },
+        onComplete: function(){ refSetLevel(99); resolve(); }
+      });
+    });
+  }
+
+  /* ════════════════════════════════════════════════════════════
+     EXTRACTED SIDE — RevealEngine + descriptor params.
+     engine.setLevel rounds internally (declared deviation),
+     so passing raw obj.v is parity with the reference.
+     ════════════════════════════════════════════════════════════ */
+  function engPaint(params){
+    return new Promise(function(resolve){
+      var obj = { v: -1 };
+      engine.clear();
+      gsap.to(obj, {
+        v: 99,
+        duration: (params && params.duration != null) ? params.duration : 1.6,
+        ease:     (params && params.ease) ? params.ease : 'power1.out',
+        onUpdate:   function(){ engine.setLevel(obj.v); },
+        onComplete: function(){ engine.fill(); resolve(); }
+      });
+    });
+  }
+
+  /* ─── loading ─── */
+  function loadStory(){
+    return fetch('story.json')
+      .then(function(r){ if (!r.ok) throw 0; return r.json(); })
+      .then(function(j){ story = j; usingFallback = false; })
+      .catch(function(){ story = DEFAULT_STORY; usingFallback = true; });
+  }
+
+  function fetchSVG(url){
+    if (svgCache[url]) return Promise.resolve(svgCache[url]);
+    return fetch(url).then(function(r){
+      if (!r.ok) throw new Error(r.status + ' ' + url);
+      return r.text();
+    }).then(function(txt){ svgCache[url] = txt; return txt; });
+  }
+
+  function showError(msg){
+    [refState, engState].forEach(function(el){
+      el.textContent = msg;
+      el.classList.add('error');
+      el.classList.remove('hidden');
+    });
+  }
+
+  function loadScene(i){
+    if (busy) return Promise.resolve();
+    cur = (i + story.scenes.length) % story.scenes.length;
+    var scene = story.scenes[cur];
+    busy = true;
+    $('#replay').disabled = true;
+    $('#sceneName').textContent = scene.name + (usingFallback ? '  (story.json not found — using built-in defaults)' : '');
+    renderDots();
+    [refState, engState].forEach(function(el){
+      el.textContent = 'loading ' + scene.asset + ' …';
+      el.classList.remove('hidden','error');
+    });
+
+    return fetchSVG(scene.asset).then(function(txt){
+      refHost.innerHTML = txt;
+      engHost.innerHTML = txt;
+      refIndex(refHost);
+      engine = engine ? (engine.container = engHost, engine.rescan()) : new RevealEngine(engHost);
+      $('#refMeta').textContent = refPaths + ' paths';
+      $('#engMeta').textContent = engine.pathCount + ' paths · ' + engine.bucketCount + ' buckets';
+      [refState, engState].forEach(function(el){ el.classList.add('hidden'); });
+      busy = false;
+      $('#replay').disabled = false;
+      return replay();
+    }).catch(function(e){
+      busy = false;
+      showError('could not fetch ' + scene.asset +
+        ' — serve this folder over http (python3 -m http.server) and open localhost, not file://');
+      console.error(e);
+    });
+  }
+
+  /* ─── the measurement ─── */
+  function replay(){
+    if (busy || !engine) return Promise.resolve();
+    busy = true;
+    $('#replay').disabled = true;
+    var params = story.scenes[cur].enter && story.scenes[cur].enter.params;
+
+    if (RevealEngine.reducedMotion){
+      refSetLevel(99);
+      engine.fill();
+      setVerdict(null, null, 'reduced motion active — both stages instant-filled (correct semantics). toggle off + reload to measure.');
+      busy = false; $('#replay').disabled = false;
+      return Promise.resolve();
+    }
+
+    var t0 = performance.now(), refMs = 0, engMs = 0;
+    var a = refPaint(1.6).then(function(){ refMs = performance.now() - t0; });
+    var b = engPaint(params).then(function(){ engMs = performance.now() - t0; });
+
+    return Promise.all([a, b]).then(function(){
+      var d = Math.abs(refMs - engMs);
+      var paramNote = (params && params.duration !== 1.6)
+        ? '  ·  note: json duration=' + params.duration + 's ≠ production 1.6s — delta expected (json-drive gate, not a parity run)'
+        : '';
+      setVerdict(d,
+        'ref <b>' + refMs.toFixed(0) + 'ms</b> · engine <b>' + engMs.toFixed(0) + 'ms</b> · ' +
+        refPaths + ' vs ' + engine.pathCount + ' paths' + paramNote,
+        null);
+      busy = false; $('#replay').disabled = false;
+    });
+  }
+
+  function setVerdict(delta, detailHTML, override){
+    var el = $('#delta'), det = $('#detail');
+    if (override){ el.textContent = '—'; el.className = 'delta'; det.textContent = override; return; }
+    el.textContent = delta.toFixed(0) + ' ms';
+    el.className = 'delta ' + (delta <= 50 ? 'pass' : 'fail');
+    det.innerHTML = detailHTML;
+  }
+
+  /* ─── nav ─── */
+  function renderDots(){
+    var box = $('#dots'); box.innerHTML = '';
+    story.scenes.forEach(function(s, i){
+      var b = document.createElement('button');
+      b.className = 'dot' + (i === cur ? ' on' : '');
+      b.setAttribute('aria-label', 'Scene ' + (i + 1) + ': ' + s.name);
+      b.addEventListener('click', function(){ loadScene(i); });
+      box.appendChild(b);
+    });
+  }
+
+  $('#prev').addEventListener('click', function(){ loadScene(cur - 1); });
+  $('#next').addEventListener('click', function(){ loadScene(cur + 1); });
+  $('#replay').addEventListener('click', replay);
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowLeft') loadScene(cur - 1);
+    else if (e.key === 'ArrowRight') loadScene(cur + 1);
+    else if (e.key === ' ' && e.target === document.body){ e.preventDefault(); replay(); }
+  });
+
+  /* boot */
+  loadStory().then(function(){ loadScene(0); });
+})();
+</script>
+</body>
+</html>

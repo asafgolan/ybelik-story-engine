@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ybelik · scene lab — Module C gate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- host page loads the faces; the theme only names the roles -->
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Heebo:wght@300;400;500&family=Cormorant+Garamond:ital,wght@1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme-yael.css">      <!-- Module E: values -->
+<link rel="stylesheet" href="scene-player.css">    <!-- Module C: structure -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="reveal-engine.js"></script>
+<script src="scene-player.js"></script>
+<style>
+  /* lab chrome only — the stage itself is styled by the modules */
+  :root{
+    --lab-ink:#14110E; --lab-ink-2:#201B16; --lab-line:#3A332B;
+    --lab-fg:#E9E2D4; --lab-mist:#9A9284; --lab-mist-2:#C6BEAF; --shu:#C0432B;
+    --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--lab-ink); color:var(--lab-fg);
+    font-family:'Spectral',Georgia,serif;
+    padding:clamp(16px,2.5vw,34px);
+    -webkit-font-smoothing:antialiased;
+  }
+  header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+  .seal{width:24px;height:24px;border-radius:3px;background:var(--shu);position:relative;flex:none}
+  .seal::after{content:"";position:absolute;inset:5px;border:1.5px solid rgba(255,255,255,.55)}
+  h1{font-size:21px;font-weight:400;letter-spacing:.05em;margin:0}
+  h1 b{font-weight:500}
+  .sub{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--lab-mist);margin-left:auto}
+
+  /* the player's stage — sized by the lab, styled by the modules */
+  #stage.sp-stage{
+    height:min(72vh,640px); border-radius:2px;
+    box-shadow:0 1px 0 rgba(255,255,255,.12), 0 22px 44px -22px rgba(0,0,0,.8);
+  }
+  #stage .state{
+    position:absolute;inset:0;display:grid;place-items:center;z-index:20;
+    font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:#6b6154;
+    background:var(--paper);transition:opacity .3s ease;pointer-events:none;
+  }
+  #stage .state.hidden{opacity:0}
+  #stage .state.error{color:var(--shu);padding:0 12%;text-align:center;line-height:1.7}
+
+  /* temporary nav — stands in for Module D (gestures/dots live there) */
+  .nav{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+  .nav button{font-family:var(--mono)}
+  .arrow{background:var(--lab-ink-2);color:var(--lab-fg);border:1px solid var(--lab-line);
+    width:38px;height:34px;border-radius:3px;cursor:pointer;font-size:14px}
+  .arrow:hover{border-color:var(--lab-mist)}
+  .arrow[disabled]{opacity:.4;cursor:default}
+  .dots{display:flex;gap:7px}
+  .dot{width:9px;height:9px;border-radius:2px;background:transparent;border:1px solid var(--lab-mist);padding:0;cursor:pointer}
+  .dot.on{background:var(--shu);border-color:var(--shu)}
+  button:focus-visible{outline:2px solid var(--shu);outline-offset:2px}
+  .readout{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--lab-mist);text-align:right;line-height:1.7}
+  .readout b{color:var(--lab-mist-2);font-weight:500}
+
+  .foot{
+    font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--lab-mist);
+    margin-top:14px;padding-top:12px;border-top:1px solid var(--lab-line);line-height:2;
+  }
+  .foot b{color:var(--lab-mist-2);font-weight:500}
+</style>
+</head>
+<body>
+  <header>
+    <div class="seal" aria-hidden="true"></div>
+    <h1>scene lab <b>·</b> Module C gate</h1>
+    <div class="sub">ScenePlayer · story.json only · captions from data</div>
+  </header>
+
+  <div id="stage" class="sp-stage">
+    <div class="state" id="state">loading story.json …</div>
+  </div>
+
+  <div class="nav">
+    <button class="arrow" id="prev" aria-label="Previous scene (jumpToPainted)">&#8592;</button>
+    <div class="dots" id="dots"></div>
+    <button class="arrow" id="next" aria-label="Next scene (goTo)">&#8594;</button>
+    <div class="readout" id="readout">—</div>
+  </div>
+
+  <p class="foot">
+    forward <b>paints</b> (goTo) · backward <b>jumps to painted</b> (jumpToPainted) — the production asymmetry.
+    captions render from <b>story.json</b>: edit text or position there, reload, no code.
+    compare against <b>index.html</b> in a second window (GC3).
+    these buttons are a stand-in for Module D — gestures, dots and scroll-engage attach at
+    onSceneChange / onBoundary. serve over http, not file://.
+  </p>
+
+<script>
+(function(){
+  'use strict';
+  var $ = function(s){ return document.querySelector(s); };
+  var stateEl = $('#state'), dotsEl = $('#dots'), readout = $('#readout');
+  var player = null, story = null;
+
+  function renderDots(active){
+    dotsEl.innerHTML = '';
+    story.scenes.forEach(function(s, i){
+      var b = document.createElement('button');
+      b.className = 'dot' + (i === active ? ' on' : '');
+      b.setAttribute('aria-label', 'Scene ' + (i + 1) + ': ' + s.name);
+      b.addEventListener('click', function(){ player.goTo(i); });
+      dotsEl.appendChild(b);
+    });
+  }
+
+  function updateReadout(i){
+    var scene = story.scenes[i];
+    var p = (scene.enter && scene.enter.params) || {};
+    var cap = scene.caption || {};
+    readout.innerHTML =
+      '<b>' + (i + 1) + '/' + story.scenes.length + ' · ' + scene.name + '</b><br>' +
+      'reveal ' + (p.duration != null ? p.duration : story.config.reveal.duration) + 's · ' +
+      (p.ease || story.config.reveal.ease) +
+      ' · caption ' + (cap.position || '—') +
+      (player.reduced ? ' · <b>reduced motion</b>' : '');
+  }
+
+  fetch('story.json')
+    .then(function(r){ if(!r.ok) throw new Error('story.json ' + r.status); return r.json(); })
+    .then(function(j){
+      story = j;
+      player = new ScenePlayer($('#stage'), story, {
+        onSceneChange: function(i){ renderDots(i); updateReadout(i); },
+        onBoundary: function(dir){
+          // Module D's attachment point — the lab just pulses the button.
+          var btn = dir > 0 ? $('#next') : $('#prev');
+          btn.disabled = true;
+          setTimeout(function(){ btn.disabled = false; }, 300);
+        }
+      });
+      stateEl.textContent = 'loading scenes …';
+      return player.ready;
+    })
+    .then(function(){
+      stateEl.classList.add('hidden');
+      renderDots(-1);
+      return player.goTo(0);
+    })
+    .catch(function(e){
+      stateEl.textContent = 'could not start: ' + e.message +
+        ' — serve this folder over http (python3 -m http.server) and open localhost, not file://';
+      stateEl.classList.add('error');
+      console.error(e);
+    });
+
+  $('#next').addEventListener('click', function(){ if(player) player.next(); });
+  $('#prev').addEventListener('click', function(){ if(player) player.prev(); });
+  document.addEventListener('keydown', function(e){
+    if(!player) return;
+    if(e.key === 'ArrowRight' || e.key === 'ArrowDown'){ e.preventDefault(); player.next(); }
+    else if(e.key === 'ArrowLeft' || e.key === 'ArrowUp'){ e.preventDefault(); player.prev(); }
+  });
+})();
+</script>
+</body>
+</html>

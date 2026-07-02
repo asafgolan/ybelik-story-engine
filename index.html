@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>יעל · מרחב להקשבה</title>
+  <meta name="description" content="ליווי וקואצ'ינג — מרחב נשימה, שקט ותנועה" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐝</text></svg>" />
+  <link rel="preload" href="svg/01-quiet-sun.svg"  as="fetch" crossorigin />
+  <link rel="preload" href="svg/02-vivid-sun.svg"  as="fetch" crossorigin />
+  <link rel="preload" href="svg/03-bird.svg"       as="fetch" crossorigin />
+  <link rel="preload" href="svg/04-empty-rock.svg" as="fetch" crossorigin />
+  <link rel="preload" href="svg/05-girl.svg"       as="fetch" crossorigin />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Heebo:wght@300;400;500&family=Cormorant+Garamond:ital,wght@1,400&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- the module stack: theme values first, then structure -->
+  <link rel="stylesheet" href="theme-yael.css" />
+  <link rel="stylesheet" href="scene-player.css" />
+
+  <style>
+    /* Page styles only. Panels, captions, the .rp reveal rule and the
+       paper vignette live in scene-player.css; palette + type tokens
+       live in theme-yael.css. This block must come AFTER those links:
+       .stage's position:sticky below must cascade over .sp-stage's
+       position:relative. */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--paper); }
+    body {
+      font-family: var(--sans);
+      font-weight: 300;
+      color: var(--ink);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--ink); color: var(--paper); }
+
+    /* ─── intro ──────────────────────────────────────────── */
+    .intro {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center; text-align: center;
+      padding: 4rem 2rem;
+    }
+    .intro .eyebrow {
+      font-family: var(--latin); font-style: italic;
+      color: var(--ochre); font-size: 1.1rem;
+      letter-spacing: 0.15em; margin-bottom: 1.5rem;
+    }
+    .intro h1 {
+      font-family: var(--serif); font-weight: 500;
+      font-size: clamp(2.5rem, 7vw, 5rem); line-height: 1.1;
+      margin-bottom: 1.5rem; letter-spacing: -0.01em;
+    }
+    .intro h1 em {
+      display: block; font-family: var(--latin); font-style: italic;
+      font-weight: 400; color: var(--ochre);
+      font-size: 0.45em; letter-spacing: 0.04em; margin-top: 1rem;
+    }
+    .intro p { max-width: 36ch; font-size: 1.1rem; color: var(--ink-soft); }
+    .scroll-cue {
+      margin-top: 4rem; font-family: var(--latin); font-style: italic;
+      color: var(--ink-soft); font-size: 0.95rem; letter-spacing: 0.2em;
+      animation: breathe 3s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%, 100% { opacity: 0.4; transform: translateY(0); }
+      50%      { opacity: 0.8; transform: translateY(8px); }
+    }
+
+    /* ─── scroll story (stage structure comes from .sp-stage) ─── */
+    .story { position: relative; height: 100vh; }
+    .stage {
+      position: sticky; top: 0;
+      width: 100%; height: 100vh;
+    }
+
+    /* progress dots */
+    .progress {
+      position: fixed; top: 50%; left: 1.5rem;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 0.85rem; z-index: 50;
+      mix-blend-mode: multiply;
+    }
+    .progress span {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--ink); opacity: 0.25;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .progress span.active { opacity: 1; transform: scale(1.4); }
+    @media (max-width: 720px) {
+      .progress { left: 0.75rem; gap: 0.6rem; }
+      .progress span { width: 5px; height: 5px; }
+    }
+
+    /* loading veil */
+    .loading-veil {
+      position: fixed; inset: 0; z-index: 999;
+      background: var(--paper);
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+      transition: opacity 0.6s ease;
+    }
+    .loading-veil.hidden { opacity: 0; }
+    .loading-veil .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--ink); opacity: 0.3;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.2; transform: scale(0.9); }
+      50%      { opacity: 0.7; transform: scale(1.1); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .progress span { transition: none; }
+      .scroll-cue, .loading-veil .dot { animation: none; }
+    }
+
+    /* invitation */
+    .invitation {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center; text-align: center;
+      padding: 4rem 2rem; gap: 2rem;
+    }
+    .invitation .eyebrow {
+      font-family: var(--latin); font-style: italic;
+      color: var(--ochre); letter-spacing: 0.15em;
+    }
+    .invitation h2 {
+      font-family: var(--serif); font-weight: 500;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      max-width: 18ch; line-height: 1.2;
+    }
+    .invitation p {
+      max-width: 40ch; color: var(--ink-soft); font-size: 1.1rem;
+    }
+    .cta {
+      display: inline-flex; align-items: center; gap: 0.75rem;
+      padding: 1.1rem 2.5rem; background: var(--ink); color: var(--paper);
+      text-decoration: none; font-family: var(--serif);
+      font-size: 1.05rem; letter-spacing: 0.02em;
+      border: none; cursor: pointer;
+      position: relative; overflow: hidden;
+      transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .cta::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--indigo); transform: translateX(100%);
+      transition: transform 0.5s cubic-bezier(0.7, 0, 0.3, 1); z-index: 0;
+    }
+    .cta:hover::before { transform: translateX(0); }
+    .cta:hover { transform: translateY(-2px); }
+    .cta span { position: relative; z-index: 1; }
+
+    footer {
+      padding: 3rem 2rem; text-align: center;
+      border-top: 1px solid rgba(31, 27, 21, 0.08);
+    }
+    footer p {
+      font-family: var(--latin); font-style: italic;
+      color: var(--ink-soft); font-size: 0.95rem;
+    }
+    footer .social {
+      display: flex; justify-content: center; gap: 1.6rem;
+      margin-bottom: 1.4rem;
+    }
+    footer .social a {
+      display: inline-flex; color: var(--ink-soft);
+      transition: color 0.35s ease, transform 0.35s ease;
+    }
+    footer .social a:hover { color: var(--ochre); transform: translateY(-2px); }
+    footer .social svg { width: 22px; height: 22px; fill: currentColor; }
+  </style>
+
+</head>
+<body>
+
+  <div class="loading-veil" id="loadingVeil"><div class="dot"></div></div>
+
+  <!-- dots are built by ProgressDots from the descriptor -->
+  <div class="progress" aria-hidden="true"></div>
+
+  <section class="intro">
+    <span class="eyebrow">יעל ·  Yael</span>
+    <h1>
+      מרחב להקשבה
+      <em>a space to listen, to breathe</em>
+    </h1>
+    <p>ליווי שקט וזורם — בלי למלא את החלל, בלי למהר.</p>
+    <div class="scroll-cue">↓  scroll  ↓</div>
+  </section>
+
+  <!-- panels + captions are built by ScenePlayer from story.json -->
+  <section class="story" id="story">
+    <div class="stage sp-stage" id="stage"></div>
+  </section>
+
+  <section class="invitation">
+    <span class="eyebrow">begin</span>
+    <h2>בואי נדבר</h2>
+    <p>פגישת היכרות, ללא התחייבות. עשרים וחמש דקות כדי לראות אם המרחב מתאים לך.</p>
+    <a class="cta" href="https://wa.me/972506345998?text=היי יעל, הגעתי דרך האתר ואשמח לקבוע פגישת היכרות 🌿" target="_blank" rel="noopener">
+      <span>קביעת פגישה ←</span>
+    </a>
+  </section>
+
+  <footer>
+    <div class="social">
+      <a href="https://www.facebook.com/yael.feder" target="_blank" rel="noopener" aria-label="פייסבוק">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      </a>
+      <a href="https://wa.me/972506345998?text=היי יעל, אשמח להצטרף לקבוצת הוואטסאפ 🌿" target="_blank" rel="noopener" aria-label="וואטסאפ — הצטרפות לקבוצה">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      </a>
+    </div>
+    <p>made with quiet · יעל © 2026</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+  <script src="reveal-engine.js"></script>
+  <script src="scene-player.js"></script>
+  <script src="navigation-shell.js"></script>
+
+  <script>
+    /* ─────────────────────────────────────────────────────────────
+       Glue — the only page-specific code left. Wires the module
+       stack: story.json → ScenePlayer (C) → navigation-shell (D),
+       themed by theme-yael.css (E), painting via reveal-engine (B)
+       over scenes compiled by compile_scene.py (A).
+
+       Documented quirk access into C's PUBLIC surface (per DOD-D):
+       · fadeOut(i)  — disengage fades the current panel + caption
+         WITHOUT clearing and scrolls mid-fade (production behavior;
+         hideScene would clear and wait 0.45s) → direct style writes
+         on player.panels[i] / player.captions[i].
+       · onDisengaged — production reset of the view cursor
+         (state.i = -1, painted = false) → direct write on
+         player.state. scene-player.js itself is untouched.
+       Declared deviation: the veil lifts on player.ready (ALL scenes
+       fetched) instead of first-scene-loaded.
+       ───────────────────────────────────────────────────────────── */
+    (async () => {
+      const stage = document.getElementById('stage');
+      const storySection = document.getElementById('story');
+
+      const story = await fetch('story.json').then(r => {
+        if (!r.ok) throw new Error('story.json ' + r.status);
+        return r.json();
+      });
+
+      const dots = new ProgressDots(document.querySelector('.progress'),
+                                    story.scenes.length);
+      dots.setActive(0);   // production had dot 0 pre-active
+
+      let engagement = null;   // assigned below; guarded in onBoundary
+
+      const player = new ScenePlayer(stage, story, {
+        onSceneChange: i => dots.setActive(i),
+        onBoundary: dir => {
+          if (!engagement) return;
+          if (dir > 0) engagement.disengageForward();
+          else engagement.disengageBackward();
+        }
+      });
+
+      const N = player.length;
+      const fadeOut = i => {                 // quirk: fade, no clear
+        const cap = player.captions[i];
+        if (cap) cap.style.opacity = '0';
+        player.panels[i].style.opacity = '0';
+      };
+
+      // Production sequencing: navigation arms only after all scenes load.
+      await player.ready;
+
+      const veil = document.getElementById('loadingVeil');
+      if (veil) {
+        veil.classList.add('hidden');
+        setTimeout(() => veil.remove(), 700);
+      }
+
+      engagement = new ScrollEngagement({
+        trigger: storySection,
+        exitSelector: 'section.invitation',
+        seam: { entry: 800, exit: 600 },           // verbatim SEAM
+        onEngage: () => player.goTo(0, { duration: 1.8 }),  // 1.8s entrance, paint at t=0
+        onExitForward: () => fadeOut(N - 1),
+        onExitBackward: () => fadeOut(0),
+        onDisengaged: () => {
+          player.state.i = -1;
+          player.state.painted = false;
+        }
+      });
+
+      new GestureNavigator({
+        engagement,
+        isBusy: () => player.state.busy,
+        onStep: dir => (dir > 0 ? player.next() : player.prev())
+      });
+    })().catch(e => console.error('init failed:', e));
+  </script>
+</body>
+</html>
