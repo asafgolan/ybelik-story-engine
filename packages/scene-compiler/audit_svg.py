@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 r"""
-audit_svg.py — DOD-G TG5 input auditor (seed of the future editor's input linter).
+audit_svg.py — input auditor / linter (DOD-G TG5; promoted reusable component).
 
 Per SVG, reports the mechanical mis-bucket predictors BEFORE compiling:
   paths        — <path> tag count (compile_scene's contract: paths only)
@@ -15,6 +15,11 @@ Per SVG, reports the mechanical mis-bucket predictors BEFORE compiling:
   buckets      — distinct buckets in the compiled output (spread sanity)
 
 Mirrors compile_scene's own resolution logic by importing it (stays in sync).
+
+API (DOD-R): audit_metrics(svg_text, kb=None) -> dict with raw numbers
+  {paths, non_path, kb, attr_fb, lum_fb, compile_ms, buckets}
+— consumed by trace_scene / the future editor input-linter. The CLI table is a
+formatter over it; its output is byte-identical to the pre-refactor tool.
 Usage: python3 audit_svg.py file.svg [more.svg ...] ; exit 0 always (report tool).
 """
 import re, sys, os, time
@@ -46,26 +51,35 @@ def lum_resolvable(color):
         return len(re.findall(r'\d+', c)) >= 3
     return False  # named colors, url(#...), currentColor -> 0.5 fallback
 
-# RESTRUCTURE BACKLOG: expose these per-specimen metrics as a dict
-# (audit_metrics) returned from audit(), so trace_scene.py and the future editor
-# input-linter consume structured data instead of the print-table. Print-only by
-# design for now (TG5 report tool); the dict API is the packaging-time upgrade.
-def audit(path):
-    txt = open(path, encoding='utf-8').read()
-    tags = [m.group(0) for m in PATH_RE.finditer(txt)]
+def audit_metrics(svg_text, kb=None):
+    """Raw metrics dict — the machine-readable core (trace_scene / editor linter)."""
+    tags = [m.group(0) for m in PATH_RE.finditer(svg_text)]
     n = len(tags)
-    nonpath = len(NONPATH_RE.findall(txt))
-    kb = os.path.getsize(path) / 1024
     attr_fb = sum(1 for t in tags if not attr_resolvable(t))
     lum_fb = sum(1 for t in tags
                  if attr_resolvable(t) and not lum_resolvable(get_color(t)))
     t0 = time.time()
-    compiled = compile_scene(txt, seed=42) if n else txt
+    compiled = compile_scene(svg_text, seed=42) if n else svg_text
     ms = (time.time() - t0) * 1000
-    buckets = len(set(re.findall(r'\brp b(\d+)\b', compiled)))
+    return {
+        'paths': n,
+        'non_path': len(NONPATH_RE.findall(svg_text)),
+        'kb': kb,
+        'attr_fb': attr_fb,
+        'lum_fb': lum_fb,
+        'compile_ms': ms,
+        'buckets': len(set(re.findall(r'\brp b(\d+)\b', compiled))),
+    }
+
+def audit(path):
+    """CLI row formatter over audit_metrics — output byte-identical to pre-refactor."""
+    txt = open(path, encoding='utf-8').read()
+    m = audit_metrics(txt, kb=os.path.getsize(path) / 1024)
+    n = m['paths']
     pct = lambda x: f'{(100.0 * x / n):5.1f}%' if n else '    —'
-    return (os.path.basename(path), n, nonpath, f'{kb:8.0f}',
-            pct(attr_fb), pct(lum_fb), f'{ms:7.1f}', buckets)
+    return (os.path.basename(path), n, m['non_path'], f"{m['kb']:8.0f}",
+            pct(m['attr_fb']), pct(m['lum_fb']), f"{m['compile_ms']:7.1f}",
+            m['buckets'])
 
 def main(argv):
     if not argv:

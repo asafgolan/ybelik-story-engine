@@ -95,8 +95,9 @@ def _downscaled_copy(image_path, max_px):
     im = Image.open(image_path)
     w, h = im.size
     scale = max_px / max(w, h)
-    if scale >= 1.0:
-        scale = max_px / max(w, h)  # only ever shrinks; if already small, this is a no-op resize
+    # NOTE: if the source is already smaller than max_px this UPSCALES (scale > 1).
+    # Theoretical here: this path only triggers on trace-HEAVY sources, which are
+    # >= 1024px in practice; worst case downstream is an 'over-ceiling' flag.
     im = im.convert("RGB").resize((max(1, round(w * scale)), max(1, round(h * scale))))
     fd, tmp = tempfile.mkstemp(suffix="_ds.png")
     os.close(fd)
