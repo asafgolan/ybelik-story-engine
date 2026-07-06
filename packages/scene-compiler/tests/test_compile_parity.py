@@ -22,7 +22,7 @@ Two configurations per scene:
 Exit code 0 = all cases byte-identical. Any mismatch prints the first
 divergence offset with context for triage.
 
-Run from the repo root:  python3 test_compile_parity.py
+Run from the repo root:  python3 packages/scene-compiler/tests/test_compile_parity.py
 Requires: svg/bucket_svg.py present and UNMODIFIED (it is the oracle —
 do not edit or delete it until this test is green).
 """
@@ -33,8 +33,9 @@ import time
 import tempfile
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
-ORACLE_PATH = ROOT / 'svg' / 'bucket_svg.py'
+PKG = Path(__file__).resolve().parents[1]     # packages/scene-compiler
+REPO = Path(__file__).resolve().parents[3]    # repo root
+ORACLE_PATH = PKG / 'oracle' / 'bucket_svg.py'
 
 SCENES = [
     '01-quiet-sun.svg',
@@ -49,7 +50,7 @@ CONFIGS = [
     ('jitter=8 seed=42',  8, 42),
 ]
 
-sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(PKG))
 from compile_scene import compile_scene  # noqa: E402
 
 
@@ -103,7 +104,7 @@ def main():
     print('-' * 78)
 
     for name in SCENES:
-        path = ROOT / 'svg' / name
+        path = REPO / 'demo' / 'svg' / name
         if not path.exists():
             print(f'{name:<22}{"—":<20}{"—":>7}{"—":>9}{"—":>9}  MISSING')
             failures += 1

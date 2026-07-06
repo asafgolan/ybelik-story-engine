@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
-<script src="reveal-engine.js"></script>
+<script src="/packages/reveal-engine/reveal-engine.js"></script>
 <style>
   :root{
     --ink:#14110E; --ink-2:#201B16; --ink-3:#2E2822; --line:#3A332B;
@@ -144,11 +144,11 @@
   var DEFAULT_STORY = {
     meta: { id:'yael-study-01', style:'sumi-e', mode:'views', engine:'bucket-reveal' },
     scenes: [
-      { id:'sc-01', name:'quiet sun',  asset:'svg/01-quiet-sun.svg',  enter:{ effect:'bucket-reveal', params:{ duration:1.6, ease:'power1.out' } } },
-      { id:'sc-02', name:'vivid sun',  asset:'svg/02-vivid-sun.svg',  enter:{ effect:'bucket-reveal', params:{ duration:1.6, ease:'power1.out' } } },
-      { id:'sc-03', name:'bird',       asset:'svg/03-bird.svg',       enter:{ effect:'bucket-reveal', params:{ duration:1.6, ease:'power1.out' } } },
-      { id:'sc-04', name:'empty rock', asset:'svg/04-empty-rock.svg', enter:{ effect:'bucket-reveal', params:{ duration:1.6, ease:'power1.out' } } },
-      { id:'sc-05', name:'girl',       asset:'svg/05-girl.svg',       enter:{ effect:'bucket-reveal', params:{ duration:1.6, ease:'power1.out' } } }
+      { id:'sc-01', name:'quiet sun',  asset:'/demo/svg/01-quiet-sun.svg',  enter:{ effect:'bucket-reveal', params:{ duration:1.6, ease:'power1.out' } } },
+      { id:'sc-02', name:'vivid sun',  asset:'/demo/svg/02-vivid-sun.svg',  enter:{ effect:'bucket-reveal', params:{ duration:1.6, ease:'power1.out' } } },
+      { id:'sc-03', name:'bird',       asset:'/demo/svg/03-bird.svg',       enter:{ effect:'bucket-reveal', params:{ duration:1.6, ease:'power1.out' } } },
+      { id:'sc-04', name:'empty rock', asset:'/demo/svg/04-empty-rock.svg', enter:{ effect:'bucket-reveal', params:{ duration:1.6, ease:'power1.out' } } },
+      { id:'sc-05', name:'girl',       asset:'/demo/svg/05-girl.svg',       enter:{ effect:'bucket-reveal', params:{ duration:1.6, ease:'power1.out' } } }
     ]
   };
 
@@ -224,7 +224,7 @@
 
   /* ─── loading ─── */
   function loadStory(){
-    return fetch('story.json')
+    return fetch('/demo/story.json')
       .then(function(r){ if (!r.ok) throw 0; return r.json(); })
       .then(function(j){ story = j; usingFallback = false; })
       .catch(function(){ story = DEFAULT_STORY; usingFallback = true; });

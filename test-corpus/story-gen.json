@@ -4,7 +4,7 @@
     "style": "mixed",
     "mode": "views",
     "engine": "bucket-reveal",
-    "note": "DOD-G corpus A1-A3/A6 + B (committable). A4/A5 photo specimens are local-only (privacy) \u2014 see story-gen.photos.json."
+    "note": "DOD-G corpus A1-A3/A6 + B (committable). A4/A5 photo specimens are local-only (privacy) — see story-gen.photos.json."
   },
   "config": {
     "transition": "dissolve-repaint",
@@ -17,8 +17,8 @@
   "scenes": [
     {
       "id": "a1-pines-s42",
-      "name": "A1\u00b7pines",
-      "asset": "test-corpus/compiled/a1-pines-s42.compiled.svg",
+      "name": "A1·pines",
+      "asset": "/test-corpus/compiled/a1-pines-s42.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -29,14 +29,14 @@
       "caption": {
         "num": "A1",
         "he": "",
-        "en": "cp8/ld32 \u00b7 2096 paths \u00b7 100 bkts",
+        "en": "cp8/ld32 · 2096 paths · 100 bkts",
         "position": "tr"
       }
     },
     {
       "id": "a1-bird-s42",
-      "name": "A1\u00b7bird s42",
-      "asset": "test-corpus/compiled/a1-bird-s42.compiled.svg",
+      "name": "A1·bird s42",
+      "asset": "/test-corpus/compiled/a1-bird-s42.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -47,14 +47,14 @@
       "caption": {
         "num": "A1",
         "he": "",
-        "en": "cp8/ld8 \u00b7 1942 paths \u00b7 100 bkts",
+        "en": "cp8/ld8 · 1942 paths · 100 bkts",
         "position": "tr"
       }
     },
     {
       "id": "a1-bird-s43",
-      "name": "A1\u00b7bird s43",
-      "asset": "test-corpus/compiled/a1-bird-s43.compiled.svg",
+      "name": "A1·bird s43",
+      "asset": "/test-corpus/compiled/a1-bird-s43.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -65,14 +65,14 @@
       "caption": {
         "num": "A1",
         "he": "",
-        "en": "cp8/ld32 \u00b7 1645 paths \u00b7 100 bkts",
+        "en": "cp8/ld32 · 1645 paths · 100 bkts",
         "position": "tr"
       }
     },
     {
       "id": "a1-bird-s44",
-      "name": "A1\u00b7bird s44",
-      "asset": "test-corpus/compiled/a1-bird-s44.compiled.svg",
+      "name": "A1·bird s44",
+      "asset": "/test-corpus/compiled/a1-bird-s44.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -83,14 +83,14 @@
       "caption": {
         "num": "A1",
         "he": "",
-        "en": "cp8/ld16 \u00b7 1574 paths \u00b7 100 bkts",
+        "en": "cp8/ld16 · 1574 paths · 100 bkts",
         "position": "tr"
       }
     },
     {
       "id": "a1-bird-s45",
-      "name": "A1\u00b7bird s45",
-      "asset": "test-corpus/compiled/a1-bird-s45.compiled.svg",
+      "name": "A1·bird s45",
+      "asset": "/test-corpus/compiled/a1-bird-s45.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -101,14 +101,14 @@
       "caption": {
         "num": "A1",
         "he": "",
-        "en": "cp8/ld16 \u00b7 2123 paths \u00b7 100 bkts",
+        "en": "cp8/ld16 · 2123 paths · 100 bkts",
         "position": "tr"
       }
     },
     {
       "id": "a2-watercolor-s42",
-      "name": "A2\u00b7watercolor",
-      "asset": "test-corpus/compiled/a2-watercolor-s42.compiled.svg",
+      "name": "A2·watercolor",
+      "asset": "/test-corpus/compiled/a2-watercolor-s42.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -119,14 +119,14 @@
       "caption": {
         "num": "A2",
         "he": "",
-        "en": "cp8/ld8 \u00b7 2498 paths \u00b7 100 bkts \u00b7 chunky-by-content",
+        "en": "cp8/ld8 · 2498 paths · 100 bkts · chunky-by-content",
         "position": "tr"
       }
     },
     {
       "id": "a3-poster-s42",
-      "name": "A3\u00b7poster",
-      "asset": "test-corpus/compiled/a3-poster-s42.compiled.svg",
+      "name": "A3·poster",
+      "asset": "/test-corpus/compiled/a3-poster-s42.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -137,14 +137,14 @@
       "caption": {
         "num": "A3",
         "he": "",
-        "en": "cp8/ld8 \u00b7 711 paths \u00b7 100 bkts \u00b7 chunky-by-content",
+        "en": "cp8/ld8 · 711 paths · 100 bkts · chunky-by-content",
         "position": "tr"
       }
     },
     {
       "id": "a6-lineart-s42",
-      "name": "A6\u00b7line-art",
-      "asset": "test-corpus/compiled/a6-lineart-s42.compiled.svg",
+      "name": "A6·line-art",
+      "asset": "/test-corpus/compiled/a6-lineart-s42.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -155,14 +155,14 @@
       "caption": {
         "num": "A6",
         "he": "",
-        "en": "cp8/ld8 \u00b7 1750 paths \u00b7 100 bkts",
+        "en": "cp8/ld8 · 1750 paths · 100 bkts",
         "position": "tr"
       }
     },
     {
       "id": "B1-gradient-sphere",
-      "name": "B1\u00b7gradient",
-      "asset": "test-corpus/compiled/B1-gradient-sphere.compiled.svg",
+      "name": "B1·gradient",
+      "asset": "/test-corpus/compiled/B1-gradient-sphere.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -173,14 +173,14 @@
       "caption": {
         "num": "B1",
         "he": "",
-        "en": "5 paths \u00b7 5 bkts (Corpus B probe)",
+        "en": "5 paths · 5 bkts (Corpus B probe)",
         "position": "tr"
       }
     },
     {
       "id": "B2-groupfill-x29",
-      "name": "B2\u00b7group-fill",
-      "asset": "test-corpus/compiled/B2-groupfill-x29.compiled.svg",
+      "name": "B2·group-fill",
+      "asset": "/test-corpus/compiled/B2-groupfill-x29.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -191,14 +191,14 @@
       "caption": {
         "num": "B2",
         "he": "",
-        "en": "209 paths \u00b7 88 bkts (Corpus B probe)",
+        "en": "209 paths · 88 bkts (Corpus B probe)",
         "position": "tr"
       }
     },
     {
       "id": "B3-shapebuilt-su47",
-      "name": "B3\u00b7shape-built",
-      "asset": "test-corpus/compiled/B3-shapebuilt-su47.compiled.svg",
+      "name": "B3·shape-built",
+      "asset": "/test-corpus/compiled/B3-shapebuilt-su47.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -209,7 +209,7 @@
       "caption": {
         "num": "B3",
         "he": "",
-        "en": "36 paths \u00b7 31 bkts (Corpus B probe)",
+        "en": "36 paths · 31 bkts (Corpus B probe)",
         "position": "tr"
       }
     }

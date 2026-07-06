@@ -55,6 +55,8 @@ import json
 import tempfile
 
 import vtracer
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # same-dir import, cwd-independent
 from compile_scene import PATH_RE      # <path> only — the trace contract, shared with audit_svg
 
 # locked baseline for every opt EXCEPT color_precision / layer_difference

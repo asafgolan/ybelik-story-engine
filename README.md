@@ -1,24 +1,34 @@
 # ybelik story engine
 
-An ink-wash **view-transition** story engine, extracted from a production site
-into five composable modules: `compile_scene.py` (A, build-time bucket compiler),
-`reveal-engine.js` (B), `scene-player.js` (C), `navigation-shell.js` (D), and
-`theme-yael.css` (E). `index.html` is the integrated proof; `story.json` is the
-descriptor that drives it.
+An ink-wash **view-transition** story engine — monorepo. Pipeline:
 
-**Architecture** — [reusable-components-extraction-map.md](reusable-components-extraction-map.md)
-is the authoritative module map and carries every extraction verdict (DOD-1/A/C/D).
+    generate → trace → compile → reveal
+    (intent)   (auto)  (buckets)  (paints)
 
-**Run it** (serve over http, not `file://`):
+**Layout**
+
+| path | what |
+|---|---|
+| `packages/reveal-engine` | Module B — runtime bucket reveal |
+| `packages/scene-player` | Module C — view player (+ structural CSS) |
+| `packages/navigation-shell` | Module D — scroll/gesture/dots |
+| `packages/themes` | Module E — theme tokens (Yael's values) |
+| `packages/scene-compiler` | Module A + trace stage: `compile_scene`, `trace_scene`, `audit_svg`, `oracle/`, `tests/` |
+| `packages/generate` | stage 0 — Cloudflare Workers AI client + worker |
+| `packages/entity-engine` | engine #2 scaffold (developing in dev-quest) |
+| `demo/` | integrated proof: `index.html` + `story.json` + scenes |
+| `labs/` | `bucket-lab` (Module B gate) · `scene-lab` (Module C gate, `?story=` picks a descriptor) |
+| `docs/` | the extraction map (authoritative) + every DOD plan/report |
+| `test-corpus/` | DOD-G corpus + `TRACE-SETTINGS.md` (policy mirror) |
+
+**Run** (serve over http, not `file://`):
 
     python3 -m http.server 8000
 
-then open `index.html` (production proof), `scene-lab.html` (Module C lab —
-`?story=` picks a descriptor), or `bucket-lab.html` (Module B reveal lab).
+then open `/demo/index.html`, `/labs/scene-lab.html`, `/labs/bucket-lab.html`.
 
-**Docs**
-- [dod-g-plan.md](dod-g-plan.md) · [dod-g-part2-handover.md](dod-g-part2-handover.md) — the generalization gate (DOD-G): does the engine hold on *any* traced image?
-- [test-corpus/TRACE-SETTINGS.md](test-corpus/TRACE-SETTINGS.md) — locked trace policy (`color_precision=8` pinned, `layer_difference` auto-tuned) + the baseline audit row
-- [test-corpus/corpus-b/CORPUS-B-SOURCES.md](test-corpus/corpus-b/CORPUS-B-SOURCES.md) — robustness-probe SVGs + their public-domain provenance
+**Docs** — start at [docs/reusable-components-extraction-map.md](docs/reusable-components-extraction-map.md)
+(the module map; every extraction verdict). Generalization gate:
+[docs/generalization-report.md](docs/generalization-report.md).
 
 **License** — MIT, see [LICENSE](LICENSE).

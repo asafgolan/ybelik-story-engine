@@ -15,7 +15,7 @@ Usage:
   export GENERATE_TOKEN=<your token>
   python3 generate_scene.py --style sumi-e-hero \
       --subject "a solitary bird perched on a gnarled pine branch over still water" \
-      --seeds 42-45 --name a1-bird --out ../test-corpus/raster/
+      --seeds 42-45 --name a1-bird --out ../../test-corpus/raster/
 
 Then the existing acceptance loop takes over unchanged:
   trace_scene.py auto-converges it, audit_svg judges it, compile buckets it.
@@ -36,9 +36,10 @@ def load_env_file(path=None):
     Call this BEFORE ArgumentParser is built — the --endpoint/--token defaults
     capture os.environ at construction time."""
     if path is None:
-        # generate/ -> repo root; resolve relative to THIS file, not the cwd
-        path = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env')
+        # packages/generate/ -> repo root (two levels up); resolve relative to
+        # THIS file, not the cwd
+        path = os.path.join(os.path.dirname(os.path.dirname(
+            os.path.dirname(os.path.abspath(__file__)))), '.env')
     try:
         with open(path, encoding='utf-8') as f:
             for line in f:

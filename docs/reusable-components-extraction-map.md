@@ -319,3 +319,23 @@ corpus built to break it, and filled the pipeline's front stages.
 **Demo assets graduated:** hero `a4-photo-02` (posterize path) + `a1-pines-s42`
 (prompt→ink-wash). **Unblocks:** Phase-1 publish. **Next (separate):** `packages/`
 restructure, and the two live-image paths (posterize shipped, styled/img2img next).
+
+---
+
+## Restructure addendum (DOD-R · engine-2.0-layout)
+
+Flat root → monorepo. Module → package mapping:
+
+| module | package |
+|---|---|
+| A · scene compiler (+ trace stage, audit/linter, oracle, parity tests) | `packages/scene-compiler/` |
+| B · reveal-engine | `packages/reveal-engine/` |
+| C · scene-player (+ structural CSS) | `packages/scene-player/` |
+| D · navigation-shell | `packages/navigation-shell/` |
+| E · theme tokens | `packages/themes/` |
+| stage 0 · generate (worker + client + styles registry) | `packages/generate/` |
+| engine #2 (sequential/entity) | `packages/entity-engine/` — scaffold; womb = dev-quest |
+
+Consumer/demo → `demo/` · gate harnesses → `labs/` · plans/reports → `docs/`.
+Path doctrine: dev serving from repo root; all page references root-relative.
+Spec: `docs/dod-r-plan.md` + `docs/dod-r-edit-manifest.md`.
