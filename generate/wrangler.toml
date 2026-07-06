@@ -1,0 +1,10 @@
+# generate_scene worker — Cloudflare Workers AI (flux-1-schnell)
+# Deploy:  wrangler deploy   (from this directory)
+# Secret:  wrangler secret put GENERATE_TOKENS   (comma-separated tokens,
+#          one per consumer — mint per starting customer)
+name = "ybelik-generate"
+main = "worker.js"
+compatibility_date = "2026-07-01"
+
+[ai]
+binding = "AI"

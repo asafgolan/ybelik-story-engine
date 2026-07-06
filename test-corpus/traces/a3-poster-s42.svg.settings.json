@@ -1,0 +1,55 @@
+{
+  "color_precision": 8,
+  "layer_difference": 8,
+  "colormode": "color",
+  "hierarchical": "stacked",
+  "mode": "spline",
+  "filter_speckle": 4,
+  "corner_threshold": 60,
+  "length_threshold": 4.0,
+  "max_iterations": 10,
+  "splice_threshold": 45,
+  "path_precision": 8,
+  "paths": 711,
+  "kb": 488.1,
+  "iterations": 4,
+  "downscaled": false,
+  "flag": "chunky-by-content",
+  "ladder_trials": [
+    {
+      "ld": 32,
+      "paths": 205,
+      "kb": 192.9
+    },
+    {
+      "ld": 24,
+      "paths": 286,
+      "kb": 245.8
+    },
+    {
+      "ld": 16,
+      "paths": 398,
+      "kb": 310.6
+    },
+    {
+      "ld": 8,
+      "paths": 711,
+      "kb": 488.1
+    }
+  ],
+  "policy": {
+    "target_paths": [
+      1500,
+      3500
+    ],
+    "max_kb": 2048,
+    "ld_ladder": [
+      8,
+      16,
+      24,
+      32,
+      48,
+      64
+    ]
+  }
+}

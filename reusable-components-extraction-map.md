@@ -186,6 +186,10 @@ Named so the map is complete; these are separate concerns, not things to pull ou
 - **Tracer (jpeg→svg)** — the first pipeline stage doesn't exist yet. It's a *component
   to build*, not extract, and it's the frontier that decides perf (via color
   quantization). Sits before Module A.
+  *DOD-G Part 2 addendum (2026-07-02): GAP filled — `trace_scene.py` is the trace
+  stage prototype (vtracer, `cp=8` pinned + auto-tuned `layer_difference` for a
+  jank-safe path budget). Graduates to a package at the restructure; becomes the
+  editor prep-panel's "Auto" mode. Perf frontier now measured — see GG5.*
 - **P1 group-fill robustness** — `get_color` reads a path's own fill/stroke/style only;
   paths that inherit color from a parent `<g>` fall to `#808080` and mis-bucket. Real
   for arbitrary user uploads, invisible on Yael's per-path-filled traces. A robustness
@@ -287,3 +291,31 @@ it's the core, it's dependency-free, and it unblocks everything else.
 **Note (not a defect):** the local `python3 -m http.server` sends no cache headers, so the preview browser served stale `theme-yael.css` / `story.json` across reloads during testing. Files on disk are correct; a hard refresh or any real host with normal caching is unaffected.
 
 **5/5 modules extracted, integration complete.** The engine exists: `compile_scene (A) → reveal-engine (B) → scene-player (C) → navigation-shell (D)`, themed by tokens (E), with production `index.html` as the integrated proof. Unlocks: the publish decision (A+B razor pipeline; C+D now have their second consumer), the second-project test (new `story.json` + theme + compiled scenes, zero engine code), and the parked sequential-mode experiment.
+
+---
+
+## DOD-G verdict — generalization gate (the publish gate)
+
+**Status: PASS** · recorded 2026-07-06 · full report in `generalization-report.md`.
+Branch `feature/generalization-gate`. Tested the "any traced image" claim on a
+corpus built to break it, and filled the pipeline's front stages.
+
+| Gate | Result |
+|------|--------|
+| **GG1** Pipeline end-to-end | **PASS** — GENERATE → trace_scene → compile → reveal ran clean on the real corpus (15 specimens walked, 100 buckets, no console errors). |
+| **GG2** Same-style claim | **PASS** — A1 ink-wash: 5 specimens, 5 different auto-tuned cells, 0% fallback, 100 buckets; human: reads-as-painting. Output IS the demo assets. |
+| **GG3** Envelope stated | **PASS** — positioning copy written: prompt→ink-wash/illustration/graphic; photos work as a *posterized* reveal today (hero proves it); *styled* photo (img2img) is the next build. |
+| **GG4** Robustness / contract | **PASS · decision (a) DEFER** — Corpus B fired (B1 100% lum-fb, B2 85.6% attr-fb, B3 60 non-path); bird anchor (36 gradient paths = the 1825→1789 DOM drop); contract written; `<g>`-fill fix → Module A v0.2 backlog. |
+| **GG5** Quantization envelope | **DONE** — sweep table; **policy: cp8 pinned, ld auto-tuned**; demo cell `cp8/ld32`; jank ceiling `cp8/ld8` (3 MB / 3.5 s). |
+
+**New pipeline stages (beyond the plan):**
+- **`trace_scene.py`** — the TRACE(GAP), now filled (§7 addendum above). Auto-tuning
+  tuner: cp8 pinned, ld ladder → jank-safe band, deterministic, settings-are-data.
+- **`generate/`** — pipeline **stage 0** (Cloudflare Workers AI, flux-1-schnell,
+  Apache-2.0 outputs). GEN1/2/3 pass; GEN2 deterministic. The user brings intent
+  (style + subject), not an image. Roadmap: `live-images-tbd.md`.
+- **`audit_svg.py`** — the mechanical mis-bucket predictor / future input linter.
+
+**Demo assets graduated:** hero `a4-photo-02` (posterize path) + `a1-pines-s42`
+(prompt→ink-wash). **Unblocks:** Phase-1 publish. **Next (separate):** `packages/`
+restructure, and the two live-image paths (posterize shipped, styled/img2img next).

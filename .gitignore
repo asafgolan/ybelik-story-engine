@@ -6,7 +6,7 @@
 ._*
 
 # Custom folder icons
-Icon
+Icon
 
 # Volume root files
 .DocumentRevisions-V100
@@ -56,4 +56,28 @@ htmlcov/
 
 # pyenv
 # .python-version
-.claude/launch.json
+
+# local Claude Code config (launch.json et al) — machine-specific, not shared
+.claude/
+
+### DOD-G corpus
+# Raster sources stay local (licensing: self-generated / own photos).
+# Only compiled specimens + the report get committed.
+test-corpus/raster/
+# Sweep artifacts (~26 MB) are regenerable byte-for-byte via trace_scene.py
+# (deterministic); kept on disk, out of git. The locked cp8/ld32 cell lives at
+# the top level (a1-pines-s42.*), committed. Sweep TABLE is in the report/docs.
+test-corpus/traces/sweep/
+test-corpus/compiled/sweep/
+# Personal-photo-derived specimens (A4/A5) stay local — their compiled SVGs render
+# as recognizable people. Only their audit NUMBERS go in the report, never the art.
+# EXCEPTION: a4-photo-02 is the DOD-G hero demo asset (owner-approved public,
+# 2026-07-06); its trace + compiled graduate. Raw photo source stays local (raster/).
+test-corpus/traces/a4-photo-*
+!test-corpus/traces/a4-photo-02.*
+test-corpus/traces/a5-photo-*
+test-corpus/compiled/a4-photo-*
+!test-corpus/compiled/a4-photo-02.*
+test-corpus/compiled/a5-photo-*
+# local-only walk that includes the photo specimens (committed story-gen.json omits them)
+test-corpus/story-gen.photos.json

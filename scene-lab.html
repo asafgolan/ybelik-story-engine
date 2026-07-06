@@ -77,7 +77,7 @@
   </header>
 
   <div id="stage" class="sp-stage">
-    <div class="state" id="state">loading story.json …</div>
+    <div class="state" id="state">loading descriptor …</div>
   </div>
 
   <div class="nav">
@@ -102,6 +102,16 @@
   var stateEl = $('#state'), dotsEl = $('#dots'), readout = $('#readout');
   var player = null, story = null;
 
+  // ?story= picks the descriptor (default story.json) so the lab can walk any
+  // corpus via story-gen.json. Relative same-origin paths only — no protocol.
+  var storyUrl = 'story.json';
+  try {
+    var q = new URLSearchParams(location.search).get('story');
+    if (q && q.indexOf('://') === -1 && q.charAt(0) !== '/') storyUrl = q;
+  } catch (e) {}
+  var subEl = document.querySelector('.sub');
+  if (subEl) subEl.textContent = 'ScenePlayer · ' + storyUrl + ' · captions from data';
+
   function renderDots(active){
     dotsEl.innerHTML = '';
     story.scenes.forEach(function(s, i){
@@ -125,8 +135,8 @@
       (player.reduced ? ' · <b>reduced motion</b>' : '');
   }
 
-  fetch('story.json')
-    .then(function(r){ if(!r.ok) throw new Error('story.json ' + r.status); return r.json(); })
+  fetch(storyUrl)
+    .then(function(r){ if(!r.ok) throw new Error(storyUrl + ' ' + r.status); return r.json(); })
     .then(function(j){
       story = j;
       player = new ScenePlayer($('#stage'), story, {

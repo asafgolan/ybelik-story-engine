@@ -1,0 +1,18 @@
+{
+  "name": "ybelik-generate",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "generate_scene worker — pipeline stage 0: text intent (style + subject) -> styled raster via Cloudflare Workers AI (flux-1-schnell, Apache-2.0 outputs). Pairs with ../trace_scene.py.",
+  "main": "worker.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "secret": "wrangler secret put GENERATE_TOKENS",
+    "health": "test -n \"$URL\" && curl -s \"$URL/health\" || echo 'set URL=https://ybelik-generate.<acct>.workers.dev'"
+  },
+  "devDependencies": {
+    "wrangler": "^4.107.0"
+  }
+}

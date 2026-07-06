@@ -1,0 +1,5 @@
+# Cloudflare Worker local dev — never commit
+node_modules/
+.wrangler/
+.dev.vars
+*.log

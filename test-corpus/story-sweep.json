@@ -1,0 +1,181 @@
+{
+  "meta": {
+    "id": "a1-quant-sweep",
+    "style": "sumi-e",
+    "mode": "views",
+    "engine": "bucket-reveal",
+    "note": "DOD-G TG3 quantization sweep on a1-pines-s42 (FLUX schnell)."
+  },
+  "config": {
+    "transition": "dissolve-repaint",
+    "reveal": {
+      "duration": 1.6,
+      "ease": "power1.out"
+    },
+    "captionDelay": 0.35
+  },
+  "scenes": [
+    {
+      "id": "cp4-ld8",
+      "name": "cp4 ld8",
+      "asset": "test-corpus/compiled/sweep/a1-cp4-ld8.compiled.svg",
+      "enter": {
+        "effect": "bucket-reveal",
+        "params": {
+          "duration": 1.6,
+          "ease": "power1.out"
+        }
+      },
+      "caption": {
+        "num": "cp4-ld8",
+        "he": "",
+        "en": "cp4/ld8: 1036 paths, 456kB, 51ms",
+        "position": "tr"
+      }
+    },
+    {
+      "id": "cp4-ld16",
+      "name": "cp4 ld16",
+      "asset": "test-corpus/compiled/sweep/a1-cp4-ld16.compiled.svg",
+      "enter": {
+        "effect": "bucket-reveal",
+        "params": {
+          "duration": 1.6,
+          "ease": "power1.out"
+        }
+      },
+      "caption": {
+        "num": "cp4-ld16",
+        "he": "",
+        "en": "cp4/ld16: 997 paths, 443kB, 48ms",
+        "position": "tr"
+      }
+    },
+    {
+      "id": "cp4-ld32",
+      "name": "cp4 ld32",
+      "asset": "test-corpus/compiled/sweep/a1-cp4-ld32.compiled.svg",
+      "enter": {
+        "effect": "bucket-reveal",
+        "params": {
+          "duration": 1.6,
+          "ease": "power1.out"
+        }
+      },
+      "caption": {
+        "num": "cp4-ld32",
+        "he": "",
+        "en": "cp4/ld32: 893 paths, 411kB, 34ms",
+        "position": "tr"
+      }
+    },
+    {
+      "id": "cp6-ld8",
+      "name": "cp6 ld8",
+      "asset": "test-corpus/compiled/sweep/a1-cp6-ld8.compiled.svg",
+      "enter": {
+        "effect": "bucket-reveal",
+        "params": {
+          "duration": 1.6,
+          "ease": "power1.out"
+        }
+      },
+      "caption": {
+        "num": "cp6-ld8",
+        "he": "",
+        "en": "cp6/ld8: 2746 paths, 1371kB, 707ms",
+        "position": "tr"
+      }
+    },
+    {
+      "id": "cp6-ld16",
+      "name": "cp6 ld16",
+      "asset": "test-corpus/compiled/sweep/a1-cp6-ld16.compiled.svg",
+      "enter": {
+        "effect": "bucket-reveal",
+        "params": {
+          "duration": 1.6,
+          "ease": "power1.out"
+        }
+      },
+      "caption": {
+        "num": "cp6-ld16",
+        "he": "",
+        "en": "cp6/ld16: 2496 paths, 1262kB, 567ms",
+        "position": "tr"
+      }
+    },
+    {
+      "id": "cp6-ld32",
+      "name": "cp6 ld32",
+      "asset": "test-corpus/compiled/sweep/a1-cp6-ld32.compiled.svg",
+      "enter": {
+        "effect": "bucket-reveal",
+        "params": {
+          "duration": 1.6,
+          "ease": "power1.out"
+        }
+      },
+      "caption": {
+        "num": "cp6-ld32",
+        "he": "",
+        "en": "cp6/ld32: 2000 paths, 1082kB, 319ms",
+        "position": "tr"
+      }
+    },
+    {
+      "id": "cp8-ld8",
+      "name": "cp8 ld8",
+      "asset": "test-corpus/compiled/sweep/a1-cp8-ld8.compiled.svg",
+      "enter": {
+        "effect": "bucket-reveal",
+        "params": {
+          "duration": 1.6,
+          "ease": "power1.out"
+        }
+      },
+      "caption": {
+        "num": "cp8-ld8",
+        "he": "",
+        "en": "cp8/ld8: 4367 paths, 3006kB, 3480ms",
+        "position": "tr"
+      }
+    },
+    {
+      "id": "cp8-ld16",
+      "name": "cp8 ld16",
+      "asset": "test-corpus/compiled/sweep/a1-cp8-ld16.compiled.svg",
+      "enter": {
+        "effect": "bucket-reveal",
+        "params": {
+          "duration": 1.6,
+          "ease": "power1.out"
+        }
+      },
+      "caption": {
+        "num": "cp8-ld16",
+        "he": "",
+        "en": "cp8/ld16: 3146 paths, 2260kB, 1932ms",
+        "position": "tr"
+      }
+    },
+    {
+      "id": "cp8-ld32",
+      "name": "cp8 ld32",
+      "asset": "test-corpus/compiled/sweep/a1-cp8-ld32.compiled.svg",
+      "enter": {
+        "effect": "bucket-reveal",
+        "params": {
+          "duration": 1.6,
+          "ease": "power1.out"
+        }
+      },
+      "caption": {
+        "num": "cp8-ld32",
+        "he": "",
+        "en": "cp8/ld32: 2096 paths, 1628kB, 882ms",
+        "position": "tr"
+      }
+    }
+  ]
+}
