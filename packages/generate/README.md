@@ -15,7 +15,7 @@ SORT_KEYS / TRANSITIONS), versioned once, never scattered in clients.
 ## Deploy (once, ~5 min)
 
 ```bash
-cd generate
+cd packages/generate
 npx wrangler login                       # your Cloudflare account
 npx wrangler secret put GENERATE_TOKENS  # comma-separated; mint one per consumer
 npx wrangler deploy                      # → https://ybelik-generate.<acct>.workers.dev
@@ -29,7 +29,7 @@ export GENERATE_ENDPOINT=https://ybelik-generate.<acct>.workers.dev
 export GENERATE_TOKEN=<token>
 python3 generate_scene.py --style sumi-e-hero \
   --subject "a solitary bird perched on a gnarled pine branch over still water" \
-  --seeds 42-45 --name a1-bird --out ../test-corpus/raster/
+  --seeds 42-45 --name a1-bird --out ../../test-corpus/raster/
 ```
 
 Each image lands with a `.settings.json` sidecar (style, subject, seed, steps,

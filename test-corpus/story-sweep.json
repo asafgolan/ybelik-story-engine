@@ -18,7 +18,7 @@
     {
       "id": "cp4-ld8",
       "name": "cp4 ld8",
-      "asset": "test-corpus/compiled/sweep/a1-cp4-ld8.compiled.svg",
+      "asset": "/test-corpus/compiled/sweep/a1-cp4-ld8.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -36,7 +36,7 @@
     {
       "id": "cp4-ld16",
       "name": "cp4 ld16",
-      "asset": "test-corpus/compiled/sweep/a1-cp4-ld16.compiled.svg",
+      "asset": "/test-corpus/compiled/sweep/a1-cp4-ld16.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -54,7 +54,7 @@
     {
       "id": "cp4-ld32",
       "name": "cp4 ld32",
-      "asset": "test-corpus/compiled/sweep/a1-cp4-ld32.compiled.svg",
+      "asset": "/test-corpus/compiled/sweep/a1-cp4-ld32.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -72,7 +72,7 @@
     {
       "id": "cp6-ld8",
       "name": "cp6 ld8",
-      "asset": "test-corpus/compiled/sweep/a1-cp6-ld8.compiled.svg",
+      "asset": "/test-corpus/compiled/sweep/a1-cp6-ld8.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -90,7 +90,7 @@
     {
       "id": "cp6-ld16",
       "name": "cp6 ld16",
-      "asset": "test-corpus/compiled/sweep/a1-cp6-ld16.compiled.svg",
+      "asset": "/test-corpus/compiled/sweep/a1-cp6-ld16.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -108,7 +108,7 @@
     {
       "id": "cp6-ld32",
       "name": "cp6 ld32",
-      "asset": "test-corpus/compiled/sweep/a1-cp6-ld32.compiled.svg",
+      "asset": "/test-corpus/compiled/sweep/a1-cp6-ld32.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -126,7 +126,7 @@
     {
       "id": "cp8-ld8",
       "name": "cp8 ld8",
-      "asset": "test-corpus/compiled/sweep/a1-cp8-ld8.compiled.svg",
+      "asset": "/test-corpus/compiled/sweep/a1-cp8-ld8.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -144,7 +144,7 @@
     {
       "id": "cp8-ld16",
       "name": "cp8 ld16",
-      "asset": "test-corpus/compiled/sweep/a1-cp8-ld16.compiled.svg",
+      "asset": "/test-corpus/compiled/sweep/a1-cp8-ld16.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {
@@ -162,7 +162,7 @@
     {
       "id": "cp8-ld32",
       "name": "cp8 ld32",
-      "asset": "test-corpus/compiled/sweep/a1-cp8-ld32.compiled.svg",
+      "asset": "/test-corpus/compiled/sweep/a1-cp8-ld32.compiled.svg",
       "enter": {
         "effect": "bucket-reveal",
         "params": {

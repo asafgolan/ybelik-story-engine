@@ -14,7 +14,7 @@
     {
       "id": "sc-01",
       "name": "quiet sun",
-      "asset": "svg/01-quiet-sun.svg",
+      "asset": "/demo/svg/01-quiet-sun.svg",
       "enter": { "effect": "bucket-reveal", "params": { "duration": 1.6, "ease": "power1.out" } },
       "caption": {
         "num": "i.",
@@ -26,7 +26,7 @@
     {
       "id": "sc-02",
       "name": "vivid sun",
-      "asset": "svg/02-vivid-sun.svg",
+      "asset": "/demo/svg/02-vivid-sun.svg",
       "enter": { "effect": "bucket-reveal", "params": { "duration": 1.6, "ease": "power1.out" } },
       "caption": {
         "num": "ii.",
@@ -38,7 +38,7 @@
     {
       "id": "sc-03",
       "name": "bird",
-      "asset": "svg/03-bird.svg",
+      "asset": "/demo/svg/03-bird.svg",
       "enter": { "effect": "bucket-reveal", "params": { "duration": 1.6, "ease": "power1.out" } },
       "caption": {
         "num": "iii.",
@@ -50,7 +50,7 @@
     {
       "id": "sc-04",
       "name": "empty rock",
-      "asset": "svg/04-empty-rock.svg",
+      "asset": "/demo/svg/04-empty-rock.svg",
       "enter": { "effect": "bucket-reveal", "params": { "duration": 1.6, "ease": "power1.out" } },
       "caption": {
         "num": "iv.",
@@ -62,7 +62,7 @@
     {
       "id": "sc-05",
       "name": "girl",
-      "asset": "svg/05-girl.svg",
+      "asset": "/demo/svg/05-girl.svg",
       "enter": { "effect": "bucket-reveal", "params": { "duration": 1.6, "ease": "power1.out" } },
       "caption": {
         "num": "v.",
