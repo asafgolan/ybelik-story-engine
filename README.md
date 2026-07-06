@@ -21,6 +21,4 @@ then open `index.html` (production proof), `scene-lab.html` (Module C lab —
 - [test-corpus/TRACE-SETTINGS.md](test-corpus/TRACE-SETTINGS.md) — locked trace policy (`color_precision=8` pinned, `layer_difference` auto-tuned) + the baseline audit row
 - [test-corpus/corpus-b/CORPUS-B-SOURCES.md](test-corpus/corpus-b/CORPUS-B-SOURCES.md) — robustness-probe SVGs + their public-domain provenance
 
-**License** — none yet. A LICENSE lands at **Phase 1** (the publish milestone).
-A public-destined repo in a temporary unlicensed state is a known, tracked
-condition here, not an oversight.
+**License** — MIT, see [LICENSE](LICENSE).
