@@ -36,11 +36,11 @@ mono = JetBrains Mono. Every pen uses these so the set reads as one family.
 ## The pens
 | file | package(s) | demonstrates | status |
 |---|---|---|---|
-| `money-pen.html` | scene-compiler + reveal-engine | **flagship** — live compile: direction/jitter/seed recompile in-browser; bird primary + X-29 hostile with `auditMetrics` | ✅ proven — bird `1825·100·attr-fb 0.0%·lum-fb 2.0%`, X-29 `209·attr-fb 85.6%` (red), knobs reassign, 0 console errors |
-| `reveal-pen.html` | reveal-engine | scrub a pre-compiled scene bucket-by-bucket (`setLevel`) + play | ✅ proven — 5 paths/99 buckets, 3 visible@50 → 5@99, 0 errors |
-| `player-pen.html` | scene-player (+ reveal-engine, gsap) | descriptor-driven 3-scene player; captions (he/en); scenes via jsDelivr-GH | ✅ proven — `2/3 bird` paints, captions render, dots track, 0 errors |
-| `shell-pen.html` | navigation-shell (+ scene-player, reveal-engine, gsap, ScrollTrigger) | full scroll-engage experience: seam, gestures, progress dots | ✅ proven — 3 exports wire, scroll-engage paints 1331 paths, dot tracks, 0 errors |
-| `index.html` | — | landing: the four badges + links, the pipeline line, embed placeholders | ✅ proven — 4 badges render, 4 cards linked, 0 errors |
+| [`money-pen.html`](https://codepen.io/asafgolan/pen/ZYLrzQO) | scene-compiler + reveal-engine | **flagship** — live compile: direction/jitter/seed recompile in-browser; bird primary + X-29 hostile with `auditMetrics` | ✅ proven — bird `1825·100·attr-fb 0.0%·lum-fb 2.0%`, X-29 `209·attr-fb 85.6%` (red), knobs reassign, 0 console errors |
+| [`reveal-pen.html`](https://codepen.io/asafgolan/pen/MYJQgKy) | reveal-engine | scrub a pre-compiled scene bucket-by-bucket (`setLevel`) + play | ✅ proven — 5 paths/99 buckets, 3 visible@50 → 5@99, 0 errors |
+| [`player-pen.html`](https://codepen.io/asafgolan/pen/QwdQLyW) | scene-player (+ reveal-engine, gsap) | descriptor-driven 3-scene player; captions (he/en); scenes via jsDelivr-GH | ✅ proven — `2/3 bird` paints, captions render, dots track, 0 errors |
+| [`shell-pen.html`](https://codepen.io/asafgolan/pen/bNgLbVP) | navigation-shell (+ scene-player, reveal-engine, gsap, ScrollTrigger) | full scroll-engage experience: seam, gestures, progress dots | ✅ proven — 3 exports wire, scroll-engage paints 1331 paths, dot tracks, 0 errors |
+| [`index.html`](https://codepen.io/asafgolan/pen/JoEpPGr) | — | landing: the four badges + links, the pipeline line, embed placeholders | ✅ proven — 4 badges render, 4 cards linked, 0 errors |
 | `launchers.html` | — | Prefill-API launchers (5 forms → `codepen.io/pen/define`) | ✅ built — payloads round-trip, externals routed; ⛔ open-only, Asaf saves |
 
 ### money-pen.html ✅ (load order)
