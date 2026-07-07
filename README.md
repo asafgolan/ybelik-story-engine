@@ -1,6 +1,6 @@
 # ybelik story engine
 
-[![npm](https://img.shields.io/npm/v/%40ybelik%2Freveal-engine?label=%40ybelik%2Freveal-engine)](https://www.npmjs.com/package/@ybelik/reveal-engine) [![npm](https://img.shields.io/npm/v/%40ybelik%2Fscene-player?label=%40ybelik%2Fscene-player)](https://www.npmjs.com/package/@ybelik/scene-player) [![npm](https://img.shields.io/npm/v/%40ybelik%2Fnavigation-shell?label=%40ybelik%2Fnavigation-shell)](https://www.npmjs.com/package/@ybelik/navigation-shell)
+[![npm](https://img.shields.io/npm/v/%40ybelik%2Freveal-engine?label=%40ybelik%2Freveal-engine)](https://www.npmjs.com/package/@ybelik/reveal-engine) [![npm](https://img.shields.io/npm/v/%40ybelik%2Fscene-player?label=%40ybelik%2Fscene-player)](https://www.npmjs.com/package/@ybelik/scene-player) [![npm](https://img.shields.io/npm/v/%40ybelik%2Fnavigation-shell?label=%40ybelik%2Fnavigation-shell)](https://www.npmjs.com/package/@ybelik/navigation-shell) [![npm](https://img.shields.io/npm/v/%40ybelik%2Fscene-compiler?label=%40ybelik%2Fscene-compiler)](https://www.npmjs.com/package/@ybelik/scene-compiler)
 
 An ink-wash **view-transition** story engine — monorepo. Pipeline:
 
