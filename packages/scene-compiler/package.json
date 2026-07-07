@@ -1,0 +1,13 @@
+{
+  "name": "@ybelik/scene-compiler",
+  "version": "0.1.0",
+  "description": "Bucket compiler for the ybelik story engine — sorts SVG paths by luminance and injects rp bN classes so reveal-engine can paint them light to dark. JS port, byte-parity with the Python original at jitter=0. Includes the input linter (auditMetrics).",
+  "main": "scene-compiler.js",
+  "files": ["scene-compiler.js"],
+  "license": "MIT",
+  "author": "Asaf Golan",
+  "repository": { "type": "git", "url": "git+https://github.com/asafgolan/ybelik-story-engine.git", "directory": "packages/scene-compiler" },
+  "homepage": "https://github.com/asafgolan/ybelik-story-engine#readme",
+  "keywords": ["svg", "compiler", "bucketing", "luminance", "ink-wash", "animation", "reveal"],
+  "publishConfig": { "access": "public" }
+}
