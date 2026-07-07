@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>@ybelik/scene-player — descriptor-driven scenes</title>
+<style>
+  :root{ --paper:#f3ece0; --ink:#14110E; --ink2:#201B16; --line:#3A332B; --fg:#E9E2D4;
+         --mist:#9A9284; --mist2:#C6BEAF; --shu:#C0432B; --ochre:#b07a3c;
+         --mono:'JetBrains Mono',ui-monospace,Menlo,monospace; --serif:'Spectral',Georgia,serif; }
+  *{box-sizing:border-box} html,body{margin:0}
+  body{ background:var(--ink); color:var(--fg); font-family:var(--serif); padding:clamp(16px,2.5vw,34px); -webkit-font-smoothing:antialiased }
+  h1{ font-size:20px; font-weight:400; margin:0 0 6px } h1 b{ font-weight:600; color:var(--shu) }
+  .sub{ font-family:var(--mono); font-size:11px; color:var(--mist); line-height:1.7; max-width:70ch; margin-bottom:16px }
+  .sub code{ color:var(--mist2) }
+  .stage{ position:relative; height:min(60vh,560px); background:var(--paper); border-radius:3px; overflow:hidden;
+          box-shadow:0 1px 0 rgba(255,255,255,.12), 0 22px 44px -22px rgba(0,0,0,.8); }
+  .nav{ display:flex; align-items:center; gap:12px; margin-top:16px; font-family:var(--mono); font-size:12px; color:var(--mist2);
+        background:var(--ink2); border:1px solid var(--line); border-radius:3px; padding:12px 16px }
+  .arrow{ background:var(--ink); color:var(--fg); border:1px solid var(--line); width:36px; height:32px; border-radius:3px; cursor:pointer; font-size:14px }
+  .arrow:hover{ border-color:var(--mist) }
+  .dots{ display:flex; gap:7px } .dot{ width:9px; height:9px; border-radius:2px; background:transparent;
+        border:1px solid var(--mist); padding:0; cursor:pointer } .dot.on{ background:var(--shu); border-color:var(--shu) }
+  .readout{ margin-left:auto; color:var(--mist) } .readout b{ color:var(--mist2); font-weight:600 }
+</style>
+</head>
+<body>
+  <h1><b>@ybelik/scene-player</b> &#183; descriptor-driven scenes</h1>
+  <p class="sub">Panels + captions built from a <code>story.json</code> descriptor; forward
+  <b>paints</b> (<code>goTo</code>), backward <b>jumps to painted</b> (the production asymmetry).
+  Scenes are pre-compiled ink-wash SVGs fetched from the pinned CDN. Loads gsap +
+  <code>@ybelik/reveal-engine</code> + <code>@ybelik/scene-player</code>.</p>
+
+  <div class="stage sp-stage" id="stage"></div>
+  <div class="nav">
+    <button class="arrow" id="prev" aria-label="previous">&#8592;</button>
+    <div class="dots" id="dots"></div>
+    <button class="arrow" id="next" aria-label="next">&#8594;</button>
+    <div class="readout" id="readout">loading&#8230;</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="https://unpkg.com/@ybelik/reveal-engine@0.1.0/reveal-engine.js"></script>
+  <script src="https://unpkg.com/@ybelik/scene-player@0.1.0/scene-player.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/@ybelik/scene-player@0.1.0/scene-player.css">
+  <script>
+  (function(){
+    'use strict';
+    var GH = 'https://cdn.jsdelivr.net/gh/asafgolan/ybelik-story-engine@engine-2.0-layout/demo/svg/';
+    var story = {
+      meta: { id:'pen-demo', style:'sumi-e', mode:'views', engine:'bucket-reveal' },
+      config: { reveal:{ duration:1.6, ease:'power1.out' }, captionDelay:0.35 },
+      scenes: [
+        { id:'sc-01', name:'quiet sun', asset:GH+'01-quiet-sun.svg',
+          enter:{ effect:'bucket-reveal', params:{ duration:1.6, ease:'power1.out' } },
+          caption:{ num:'i.', he:'לפני שמתחילים, נושמים.', en:'before we begin — we breathe.', position:'tr' } },
+        { id:'sc-03', name:'bird', asset:GH+'03-bird.svg',
+          enter:{ effect:'bucket-reveal', params:{ duration:1.6, ease:'power1.out' } },
+          caption:{ num:'ii.', he:'כל דבר במקומו.', en:'each thing — in its place.', position:'tr' } },
+        { id:'sc-05', name:'girl', asset:GH+'05-girl.svg',
+          enter:{ effect:'bucket-reveal', params:{ duration:1.6, ease:'power1.out' } },
+          caption:{ num:'iii.', he:'ולעצב.', en:'and for sorrow.', position:'tl' } }
+      ]
+    };
+    var $ = function(s){ return document.querySelector(s); };
+    var dotsEl = $('#dots'), readout = $('#readout');
+    var player = new ScenePlayer($('#stage'), story, {
+      onSceneChange: function(i){ renderDots(i); updateReadout(i); }
+    });
+    function renderDots(active){
+      dotsEl.innerHTML = '';
+      story.scenes.forEach(function(s,i){
+        var b = document.createElement('button');
+        b.className = 'dot' + (i===active ? ' on' : '');
+        b.setAttribute('aria-label','scene '+(i+1)+': '+s.name);
+        b.addEventListener('click', function(){ player.goTo(i); });
+        dotsEl.appendChild(b);
+      });
+    }
+    function updateReadout(i){
+      var s = story.scenes[i], c = s.caption || {};
+      readout.innerHTML = '<b>'+(i+1)+'/'+story.scenes.length+' · '+s.name+'</b> &#183; '+(c.en||'');
+    }
+    player.ready.then(function(){ renderDots(-1); return player.goTo(0); })
+      .catch(function(e){ readout.textContent = 'could not start: '+e.message; console.error(e); });
+    $('#next').addEventListener('click', function(){ player.next(); });
+    $('#prev').addEventListener('click', function(){ player.prev(); });
+  })();
+  </script>
+</body>
+</html>
