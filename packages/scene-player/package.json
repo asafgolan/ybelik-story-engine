@@ -1,2 +1,13 @@
-{ "name": "@ybelik/scene-player", "version": "0.1.0",
-  "main": "scene-player.js", "license": "MIT" }
+{
+  "name": "@ybelik/scene-player",
+  "version": "0.1.0",
+  "description": "Descriptor-driven view player for bucket-reveal scenes — builds panels and captions from story.json, owns paint/hide transitions. Module C of the ybelik story engine.",
+  "main": "scene-player.js",
+  "files": ["scene-player.js", "scene-player.css"],
+  "license": "MIT",
+  "author": "Asaf Golan",
+  "repository": { "type": "git", "url": "git+https://github.com/asafgolan/ybelik-story-engine.git", "directory": "packages/scene-player" },
+  "homepage": "https://github.com/asafgolan/ybelik-story-engine#readme",
+  "keywords": ["svg", "animation", "story", "scenes", "captions", "ink-wash", "gsap"],
+  "publishConfig": { "access": "public" }
+}

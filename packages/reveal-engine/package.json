@@ -1,2 +1,13 @@
-{ "name": "@ybelik/reveal-engine", "version": "0.1.0",
-  "main": "reveal-engine.js", "license": "MIT" }
+{
+  "name": "@ybelik/reveal-engine",
+  "version": "0.1.0",
+  "description": "Bucket-based SVG reveal engine — paints traced ink-wash scenes in tonal order, light to dark. Runtime core of the ybelik story engine.",
+  "main": "reveal-engine.js",
+  "files": ["reveal-engine.js"],
+  "license": "MIT",
+  "author": "Asaf Golan",
+  "repository": { "type": "git", "url": "git+https://github.com/asafgolan/ybelik-story-engine.git", "directory": "packages/reveal-engine" },
+  "homepage": "https://github.com/asafgolan/ybelik-story-engine#readme",
+  "keywords": ["svg", "animation", "reveal", "ink-wash", "sumi-e", "scroll", "storytelling"],
+  "publishConfig": { "access": "public" }
+}

@@ -1,2 +1,13 @@
-{ "name": "@ybelik/navigation-shell", "version": "0.1.0",
-  "main": "navigation-shell.js", "license": "MIT" }
+{
+  "name": "@ybelik/navigation-shell",
+  "version": "0.1.0",
+  "description": "Scroll engagement, wheel/touch/key gestures and progress dots for the ybelik story engine — drives a ScenePlayer via callbacks.",
+  "main": "navigation-shell.js",
+  "files": ["navigation-shell.js"],
+  "license": "MIT",
+  "author": "Asaf Golan",
+  "repository": { "type": "git", "url": "git+https://github.com/asafgolan/ybelik-story-engine.git", "directory": "packages/navigation-shell" },
+  "homepage": "https://github.com/asafgolan/ybelik-story-engine#readme",
+  "keywords": ["scroll", "gestures", "navigation", "scrolltrigger", "storytelling"],
+  "publishConfig": { "access": "public" }
+}
