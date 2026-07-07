@@ -14,9 +14,11 @@
   header{ margin-bottom:16px }
   h1{ font-size:20px; font-weight:400; letter-spacing:.04em; margin:0 0 6px }
   h1 b{ font-weight:600; color:var(--shu) }
-  .sub{ font-family:var(--mono); font-size:11px; color:var(--mist); line-height:1.7; max-width:70ch }
+  .sub{ font-family:var(--mono); font-size:11px; color:var(--mist); line-height:1.7; max-width:72ch }
   .sub code{ color:var(--mist2) }
-  .stage{ position:relative; height:min(60vh,560px); background:var(--paper); border-radius:3px;
+  .hostile{ display:none; color:var(--shu); margin-top:6px }
+  .hostile.show{ display:block }
+  .stage{ position:relative; height:min(58vh,540px); background:var(--paper); border-radius:3px;
           overflow:hidden; box-shadow:0 1px 0 rgba(255,255,255,.12), 0 22px 44px -22px rgba(0,0,0,.8); }
   .stage svg{ width:100%; height:100%; display:block; object-fit:contain }
   .rp{ opacity:0 }                       /* base rule — reveal-engine drives opacity */
@@ -33,6 +35,7 @@
   button:hover{ background:#a93a25 }
   .readout{ margin-left:auto; text-align:right; line-height:1.8; color:var(--mist) }
   .readout b{ color:var(--mist2); font-weight:600 }
+  .readout .fb.hot{ color:var(--shu); font-weight:600 }
 </style>
 </head>
 <body>
@@ -41,12 +44,21 @@
     <p class="sub">A traced SVG, sorted by luminance and assigned <code>class="rp bN"</code> buckets
     (N = 0..99), then painted light-to-dark by <code>@ybelik/reveal-engine</code>.
     <b>Every knob below recompiles the SVG in your browser</b> — this is the compile-time
-    interactivity the JS port exists for.</p>
+    interactivity the JS port exists for.
+    <span class="hostile" id="hostile">group-inherited styles &#8594; luminance ties &#8594;
+    draw-order reveal; <code>auditMetrics</code> catches it (attr-fb 85.6%). Labels are
+    <code>&lt;text&gt;</code>, not paths &#8212; never bucketed.</span></p>
   </header>
 
   <div class="stage" id="stage"></div>
 
   <div class="controls">
+    <label>scene
+      <select id="asset">
+        <option value="bird">ink-wash bird &#8212; traced, 1825 paths</option>
+        <option value="xray">hostile: X-29 line art &#8212; NASA, public domain, group-styled</option>
+      </select>
+    </label>
     <label>direction
       <select id="direction">
         <option value="light-to-dark">light &#8594; dark</option>
@@ -59,8 +71,8 @@
     <div class="readout" id="readout">&#8212;</div>
   </div>
 
-  <!-- the raw traced scene, inlined so the pen is fully self-contained -->
-  <script type="text/plain" id="raw-scene"><?xml version="1.0" standalone="no"?>
+  <!-- hostile input inlined so the pen is self-contained; the bird is fetched from the pinned CDN -->
+  <script type="text/plain" id="raw-xray"><?xml version="1.0" standalone="no"?>
 <svg width="696px" height="322px" viewBox="-67 257 696 322" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g style="fill:none;stroke:#000000;stroke-miterlimit:4">
 <g stroke-width="0.75" stroke-dasharray="105,2,5,2,5,2" stroke-dashoffset="25">
@@ -349,50 +361,72 @@
 </g>
 </svg></script>
 
-  <!-- the two @ybelik packages, from unpkg (pinned) -->
   <script src="https://unpkg.com/@ybelik/scene-compiler@0.1.0/scene-compiler.js"></script>
   <script src="https://unpkg.com/@ybelik/reveal-engine@0.1.0/reveal-engine.js"></script>
   <script>
   (function(){
     'use strict';
-    var raw = document.getElementById('raw-scene').textContent;
+    var BIRD_URL = 'https://cdn.jsdelivr.net/gh/asafgolan/ybelik-story-engine@engine-2.0-layout/demo/svg/03-bird.svg';
     var stage = document.getElementById('stage');
     var readout = document.getElementById('readout');
+    var hostile = document.getElementById('hostile');
+    var elAsset = document.getElementById('asset');
     var elDir = document.getElementById('direction');
     var elJit = document.getElementById('jitter');
     var elJitVal = document.getElementById('jitterVal');
     var elSeed = document.getElementById('seed');
-    var engine = null, raf = 0;
+    var engine = null, raf = 0, cache = {};
+
+    function getRaw(key){
+      if (key === 'xray') return Promise.resolve(document.getElementById('raw-xray').textContent);
+      if (cache.bird) return Promise.resolve(cache.bird);
+      return fetch(BIRD_URL).then(function(r){
+        if (!r.ok) throw new Error('bird ' + r.status);
+        return r.text();
+      }).then(function(t){ cache.bird = t; return t; });
+    }
 
     function opts(){
-      return { direction: elDir.value,
-               jitter: parseInt(elJit.value, 10),
-               seed: parseInt(elSeed.value, 10) || 0 };
+      return { direction: elDir.value, jitter: parseInt(elJit.value,10),
+               seed: parseInt(elSeed.value,10) || 0 };
+    }
+
+    function fbSpan(count, n){
+      var pct = n ? (100*count/n) : 0;
+      var cls = pct > 20 ? 'fb hot' : 'fb';
+      return '<span class="' + cls + '">' + pct.toFixed(1) + '%</span>';
     }
 
     function build(){
       cancelAnimationFrame(raf);
-      var o = opts();
-      var t0 = performance.now();
-      var compiled = SceneCompiler.compileScene(raw, o);   // the live compile
-      var ms = (performance.now() - t0).toFixed(1);
-      stage.innerHTML = compiled;                          // inject bucketed SVG
-      engine = new RevealEngine(stage);                    // scan rp bN classes
-      readout.innerHTML = '<b>' + engine.pathCount + '</b> paths &#183; <b>' +
-        engine.bucketCount + '</b> buckets &#183; compile <b>' + ms + 'ms</b><br>' +
-        'sort <b>luminance</b> &#183; ' + o.direction + ' &#183; jitter <b>' + o.jitter +
-        '</b> &#183; seed <b>' + o.seed + '</b>';
-      if (RevealEngine.reducedMotion){ engine.fill(); return; }
-      engine.clear();
-      var start = performance.now(), DUR = 1600;
-      (function tick(now){
-        var p = Math.min(1, (now - start) / DUR);
-        engine.setLevel(-1 + p * 100);                     // -1 .. 99
-        if (p < 1) raf = requestAnimationFrame(tick);
-      })(start);
+      hostile.classList.toggle('show', elAsset.value === 'xray');
+      getRaw(elAsset.value).then(function(raw){
+        var o = opts();
+        var t0 = performance.now();
+        var compiled = SceneCompiler.compileScene(raw, o);   // the live compile
+        var ms = (performance.now() - t0).toFixed(1);
+        var a = SceneCompiler.auditMetrics(raw);             // the linter, surfaced
+        stage.innerHTML = compiled;
+        engine = new RevealEngine(stage);
+        readout.innerHTML = '<b>' + engine.pathCount + '</b> paths &#183; <b>' +
+          engine.bucketCount + '</b> buckets &#183; compile <b>' + ms + 'ms</b><br>' +
+          'attr-fb ' + fbSpan(a.attr_fb, a.paths) + ' &#183; lum-fb ' + fbSpan(a.lum_fb, a.paths) +
+          '<br>' + o.direction + ' &#183; jitter <b>' + o.jitter + '</b> &#183; seed <b>' + o.seed + '</b>';
+        if (RevealEngine.reducedMotion){ engine.fill(); return; }
+        engine.clear();
+        var start = performance.now(), DUR = 1600;
+        (function tick(now){
+          var p = Math.min(1, (now - start) / DUR);
+          engine.setLevel(-1 + p * 100);
+          if (p < 1) raf = requestAnimationFrame(tick);
+        })(start);
+      }).catch(function(e){
+        readout.innerHTML = '<span class="fb hot">load failed: ' + e.message + '</span>';
+      });
     }
 
     elJit.addEventListener('input', function(){ elJitVal.textContent = elJit.value; });
+    elAsset.addEventListener('change', build);
     elDir.addEventListener('change', build);
     elSeed.addEventListener('change', build);
     elJit.addEventListener('change', build);
