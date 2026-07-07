@@ -21,8 +21,10 @@ pens marked ◻︎ are fully specified here with a proven asset route, not yet b
 - **CDN pins:** unpkg `@ybelik/<pkg>@0.1.0`; gsap/ScrollTrigger from `cdn.jsdelivr.net/npm/gsap@3.13.0` (the repo's pin). Pin everything — pens must not float on `latest`.
 - **`sort` is `luminance` only** — it's the sole registered `SORT_KEYS` entry (`scene-compiler.js:109`). The money pen exposes **direction + jitter + seed** (not a sort dropdown); stated honestly in-pen.
 - **Asset strategy — two routes, both proven:**
-  - *Inline* a small scene into the pen (fully self-contained, no fetch). Reveal pen inlines the pre-compiled `B1-gradient-sphere` (9.7 kB); money pen inlines the **raw** `B2-groupfill-x29` (26 kB, 209 paths) and compiles it live.
-  - *Fetch* via jsDelivr's GitHub CDN for the multi-scene pens (scene-player), e.g. `https://cdn.jsdelivr.net/gh/asafgolan/ybelik-story-engine@main/demo/svg/01-quiet-sun.svg` — **verified HTTP 200 with CORS** (2026-07-07). Pin `@<tag>`, not `@main`, when the pens ship.
+  - *Inline* a small scene (self-contained). Reveal pen inlines the pre-compiled `B1-gradient-sphere` (9.7 kB, gradient fills → 100% lum-fb, ties by design — a pure `setLevel` demo).
+  - *Fetch* via jsDelivr's GitHub CDN, pinned `@engine-2.0-layout` — **verified HTTP 200 + CORS** (2026-07-07). The money/player/shell pens fetch the demo scenes this way.
+  - **Flagship ruling (advisor 2026-07-07):** the money pen's *primary* asset is a **real traced ink-wash scene** — `03-bird.svg` via jsDelivr (readout `1825 paths · 100 buckets · attr-fb 0.0% · lum-fb 2.0%` — the audit landmark; the luminance story is *true*). The **raw `B2-groupfill-x29`** stays inline as a **hostile** toggle: group-inherited `<g fill>` → attr-fb **85.6%** → luminance ties → draw-order reveal; `auditMetrics` surfaces it in the readout (the input-contract linter, in UI). Network is already mandatory (unpkg), so fetching the primary adds no new failure class.
+  - **Provenance / license — cleared:** every specimen is **Public Domain** per `test-corpus/corpus-b/CORPUS-B-SOURCES.md` — B2 = "Grumman X-29 3-view line art" (Wikimedia Commons · NASA Dryden · PD), B1 gradient sphere (PD). Publishable in a public pen.
 - **Standalone contract:** every pen self-contained — loads only the packages it needs, works in a fresh browser with nothing cached.
 - **Whole contract:** shared theme tokens (the ink-wash palette below), a deliberate order (reveal → compiler → player → shell), and an **index** pen/page linking all four.
 - **Save mechanism:** CodePen has no write API. Ship each pen as a committed self-contained `.html` here, and generate a **Prefill-API** launcher (`<form action="https://codepen.io/pen/define" method="POST">` with a JSON `data` field) — one click opens a pre-filled pen to Save. (Browser-automation is the fallback if hands-off saving is wanted.)
@@ -34,18 +36,21 @@ mono = JetBrains Mono. Every pen uses these so the set reads as one family.
 ## The pens
 | file | package(s) | demonstrates | status |
 |---|---|---|---|
-| `money-pen.html` | scene-compiler + reveal-engine | **flagship** — live compile: direction/jitter/seed scrubbers recompile the SVG in-browser → repaint | ✅ proven |
-| `reveal-pen.html` | reveal-engine | scrub a pre-compiled scene bucket-by-bucket (`setLevel`) + play | ✅ proven |
-| `player-pen.html` | scene-player (+ reveal-engine, gsap) | descriptor-driven multi-scene player; captions from `story.json`; fetches scenes via jsDelivr-GH | ◻︎ spec'd |
-| `shell-pen.html` | navigation-shell (+ scene-player, reveal-engine, gsap, ScrollTrigger) | full scroll-engage experience: seam, gestures, progress dots | ◻︎ spec'd |
-| `index.html` | — | landing: the four badges + links, the pipeline line, one embed each | ◻︎ spec'd |
+| `money-pen.html` | scene-compiler + reveal-engine | **flagship** — live compile: direction/jitter/seed recompile in-browser; bird primary + X-29 hostile with `auditMetrics` | ✅ proven — bird `1825·100·attr-fb 0.0%·lum-fb 2.0%`, X-29 `209·attr-fb 85.6%` (red), knobs reassign, 0 console errors |
+| `reveal-pen.html` | reveal-engine | scrub a pre-compiled scene bucket-by-bucket (`setLevel`) + play | ✅ proven — 5 paths/99 buckets, 3 visible@50 → 5@99, 0 errors |
+| `player-pen.html` | scene-player (+ reveal-engine, gsap) | descriptor-driven 3-scene player; captions (he/en); scenes via jsDelivr-GH | ✅ proven — `2/3 bird` paints, captions render, dots track, 0 errors |
+| `shell-pen.html` | navigation-shell (+ scene-player, reveal-engine, gsap, ScrollTrigger) | full scroll-engage experience: seam, gestures, progress dots | ✅ proven — 3 exports wire, scroll-engage paints 1331 paths, dot tracks, 0 errors |
+| `index.html` | — | landing: the four badges + links, the pipeline line, embed placeholders | ✅ proven — 4 badges render, 4 cards linked, 0 errors |
+| `launchers.html` | — | Prefill-API launchers (5 forms → `codepen.io/pen/define`) | ✅ built — payloads round-trip, externals routed; ⛔ open-only, Asaf saves |
 
 ### money-pen.html ✅ (load order)
 ```html
 <script src="https://unpkg.com/@ybelik/scene-compiler@0.1.0/scene-compiler.js"></script>
 <script src="https://unpkg.com/@ybelik/reveal-engine@0.1.0/reveal-engine.js"></script>
 ```
-Proof (in-browser): both unpkg 200 · `209 paths · 100 buckets · compile ~2–5 ms` · direction
+Primary asset = `03-bird.svg` via jsDelivr (pinned `@engine-2.0-layout`); hostile `B2-groupfill-x29`
+inline. Proof (in-browser): all CDN loads 200 · bird `1825 paths · 100 buckets · attr-fb 0.0% · lum-fb 2.0%`
+(the audit landmark) · X-29 hostile `209 · attr-fb 85.6%` (glows `--shu`) + its sub-line · direction
 flips / jitter changes / seed changes each produce **different** bucket assignments · jitter
 deterministic per seed · zero console errors.
 
@@ -56,14 +61,14 @@ deterministic per seed · zero console errors.
 Proof: 5 paths / 99 buckets · slider drives progressive reveal (3 visible at level 50 → 5 at
 99) · zero console errors.
 
-### player-pen.html ◻︎ (recipe)
+### player-pen.html ✅ (recipe, built)
 Load order: `gsap@3.13.0` → `reveal-engine@0.1.0` → `scene-player@0.1.0`. Build a `story`
 object inline (`{scenes:[{asset, caption:{num,he,en,position}}…]}`) whose `asset`s are jsDelivr-GH
 URLs of the pre-compiled demo scenes; `new ScenePlayer(stage, story, {onSceneChange})`;
 `await player.ready`; prev/next buttons → `player.next()`/`player.prev()`. Note: scene-player
 **fetches** assets, so a pen needs the jsDelivr-GH route (200/CORS proven).
 
-### shell-pen.html ◻︎ (recipe)
+### shell-pen.html ✅ (recipe, built)
 Load order adds `ScrollTrigger`. Wire a tall scroll section: `new ScrollEngagement({trigger,
 exitSelector, seam:{entry:800,exit:600}, onEngage:()=>player.goTo(0), …})`, `new GestureNavigator({
 engagement, isBusy:()=>player.state.busy, onStep})`, `new ProgressDots(el, story.scenes.length)`.
