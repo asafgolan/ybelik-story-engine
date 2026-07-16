@@ -19,7 +19,8 @@ An ink-wash **view-transition** story engine — monorepo. Pipeline:
 | `packages/scene-player` | Module C — view player (+ structural CSS) |
 | `packages/navigation-shell` | Module D — scroll/gesture/dots |
 | `packages/themes` | Module E — theme tokens (Yael's values) |
-| `packages/scene-compiler` | Module A + trace stage: `compile_scene`, `trace_scene`, `audit_svg`, `oracle/`, `tests/` |
+| `packages/scene-compiler` | Module A: `compile_scene`, `audit_svg`, `oracle/`, `tests/` |
+| `packages/scene-tracer` | trace stage: `@ybelik/scene-tracer` — JS auto-tune tracer + CLI |
 | `packages/generate` | stage 0 — Cloudflare Workers AI client + worker |
 | `packages/entity-engine` | engine #2 scaffold (developing in dev-quest) |
 | `demo/` | integrated proof: `index.html` + `story.json` + scenes |
