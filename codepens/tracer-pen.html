@@ -56,24 +56,12 @@ button:hover{ background:#a93a25 } button:disabled{ opacity:.4; cursor:default }
 <script src="https://unpkg.com/@ybelik/scene-compiler@0.1.0/scene-compiler.js"></script>
 <script src="https://unpkg.com/@ybelik/reveal-engine@0.1.0/reveal-engine.js"></script>
 <script type="module">
-import * as vt from 'https://cdn.jsdelivr.net/npm/wasm_vtracer@0.2.0/wasm_vtracer_bg.js';
-const WASM_URL = 'https://cdn.jsdelivr.net/npm/wasm_vtracer@0.2.0/wasm_vtracer_bg.wasm';
-const ready = fetch(WASM_URL).then(r => r.arrayBuffer())
-  .then(b => WebAssembly.instantiate(b, { './wasm_vtracer_bg.js': vt }))
-  .then(({ instance }) => { vt.__wbg_set_wasm(instance.exports); instance.exports.__wbindgen_start(); });
-
-/* policy — mirrors trace_scene.py DEFAULT_POLICY (test-corpus/TRACE-SETTINGS.md).
-   wasm_vtracer maps colorPrecision identically to the vtracer CLI — verified CLI-parity
-   on a real photo: same path count, same rendered result (advisor sandbox, 2026-07-16). */
-const POLICY = { cp: 8, ladder: [8, 16, 24, 32, 48, 64], band: [1500, 3500], maxPx: 1024 };
-function makeCfg(ld){
-  const c = new vt.TracerConfig();
-  c.setColorMode(0); c.setHierarchical(0); c.setPathSimplifyMode(1);
-  c.setFilterSpeckle(4); c.setColorPrecision(POLICY.cp); c.setLayerDifference(ld);
-  c.setCornerThreshold(60); c.setLengthThreshold(4); c.setSpliceThreshold(45);
-  c.setPathPrecision(3);
-  return c;                       // fresh config per call — the wasm consumes it
-}
+import * as glue from 'https://cdn.jsdelivr.net/npm/wasm_vtracer@0.2.0/wasm_vtracer_bg.js';
+import { initTracer } from 'https://cdn.jsdelivr.net/npm/@ybelik/scene-tracer@0.1.0/scene-tracer.js';
+const ready = initTracer({
+  glue,
+  wasm: 'https://cdn.jsdelivr.net/npm/wasm_vtracer@0.2.0/wasm_vtracer_bg.wasm',
+});
 
 const stage = document.getElementById('stage');
 const empty = document.getElementById('empty');
@@ -81,49 +69,33 @@ const readout = document.getElementById('readout');
 const replayBtn = document.getElementById('replay');
 let lastImageData = null, raf = 0;
 
-function toImageData(img){                      // normalize to <= maxPx (declared deviation)
-  const s = Math.min(1, POLICY.maxPx / Math.max(img.width, img.height));
+function toImageData(img){                      // normalize to <= 1024px (matches DEFAULT_POLICY.downscale_px)
+  const s = Math.min(1, 1024 / Math.max(img.width, img.height));
   const w = Math.max(1, Math.round(img.width * s)), h = Math.max(1, Math.round(img.height * s));
   const c = document.createElement('canvas'); c.width = w; c.height = h;
   c.getContext('2d').drawImage(img, 0, 0, w, h);
   return c.getContext('2d').getImageData(0, 0, w, h);
 }
 
-function trace(id){                             // the auto-tune ladder (trace_scene.py, ported)
-  const bytes = new Uint8Array(id.data.buffer.slice(0));
-  let li = POLICY.ladder.indexOf(32), tried = [], svg, paths, flag = '';
-  for (let i = 0; i < 4; i++) {
-    svg = vt.convertImageToSvg(bytes, id.width, id.height, makeCfg(POLICY.ladder[li]));
-    paths = (svg.match(/<path/g) || []).length;
-    tried.push('ld' + POLICY.ladder[li] + '=' + paths);
-    if (paths < POLICY.band[0] && li > 0) { li--; continue; }
-    if (paths > POLICY.band[1] && li < POLICY.ladder.length - 1) { li++; continue; }
-    break;
-  }
-  if (paths < POLICY.band[0] && li === 0) flag = 'chunky-by-content';
-  if (paths > POLICY.band[1] && li === POLICY.ladder.length - 1) flag = 'over-ceiling';
-  return { svg, paths, cell: 'cp8/ld' + POLICY.ladder[li], tried, flag };
-}
-
 async function run(id){
-  await ready;
+  const tracer = await ready;
   empty.style.display = 'none';
   readout.innerHTML = 'tracing&#8230;';
   await new Promise(r => setTimeout(r, 30));    // let the readout paint before the CPU burst
   cancelAnimationFrame(raf);
   const t0 = performance.now();
-  const t = trace(id);
+  const { svg, settings } = tracer.traceScene(id.data, id.width, id.height);
   const traceMs = (performance.now() - t0).toFixed(0);
-  const withBox = t.svg.includes('viewBox') ? t.svg
-    : t.svg.replace('<svg', '<svg viewBox="0 0 ' + id.width + ' ' + id.height + '"');
   const t1 = performance.now();
-  const compiled = SceneCompiler.compileScene(withBox, { seed: 42 });
+  const compiled = SceneCompiler.compileScene(svg, { seed: 42 });
   const compileMs = (performance.now() - t1).toFixed(0);
   stage.innerHTML = compiled;
   const engine = new RevealEngine(stage);
-  readout.innerHTML = '<b>' + t.cell + '</b> &#183; <b>' + t.paths + '</b> paths &#183; <b>' +
-    engine.bucketCount + '</b> buckets' + (t.flag ? ' &#183; <span class="flag">' + t.flag + '</span>' : '') +
-    '<br>trace <b>' + traceMs + 'ms</b> &#183; compile <b>' + compileMs + 'ms</b> &#183; ladder: ' + t.tried.join(' ');
+  readout.innerHTML = '<b>cp' + settings.color_precision + '/ld' + settings.layer_difference +
+    '</b> &#183; <b>' + settings.paths + '</b> paths &#183; <b>' + engine.bucketCount + '</b> buckets' +
+    (settings.flag ? ' &#183; <span class="flag">' + settings.flag + '</span>' : '') +
+    '<br>trace <b>' + traceMs + 'ms</b> &#183; compile <b>' + compileMs + 'ms</b> &#183; ladder: ' +
+    settings.ladder.join(' ');
   replayBtn.disabled = false;
   if (RevealEngine.reducedMotion) { engine.fill(); return; }
   engine.clear();
