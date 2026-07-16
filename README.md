@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/%40ybelik%2Freveal-engine?label=%40ybelik%2Freveal-engine)](https://www.npmjs.com/package/@ybelik/reveal-engine) [![npm](https://img.shields.io/npm/v/%40ybelik%2Fscene-player?label=%40ybelik%2Fscene-player)](https://www.npmjs.com/package/@ybelik/scene-player) [![npm](https://img.shields.io/npm/v/%40ybelik%2Fnavigation-shell?label=%40ybelik%2Fnavigation-shell)](https://www.npmjs.com/package/@ybelik/navigation-shell) [![npm](https://img.shields.io/npm/v/%40ybelik%2Fscene-compiler?label=%40ybelik%2Fscene-compiler)](https://www.npmjs.com/package/@ybelik/scene-compiler)
 
-**live pens:** [live compile](https://codepen.io/asafgolan/pen/ZYLrzQO) · [bucket reveal](https://codepen.io/asafgolan/pen/MYJQgKy) · [scene player](https://codepen.io/asafgolan/pen/QwdQLyW) · [full shell](https://codepen.io/asafgolan/pen/bNgLbVP) · [all pens](https://codepen.io/asafgolan/pen/JoEpPGr)
+**live pens:** [live compile](https://codepen.io/asafgolan/pen/ZYLrzQO) · [bucket reveal](https://codepen.io/asafgolan/pen/MYJQgKy) · [scene player](https://codepen.io/asafgolan/pen/QwdQLyW) · [full shell](https://codepen.io/asafgolan/pen/bNgLbVP) · [all pens](https://codepen.io/asafgolan/pen/JoEpPGr) — index & recipes: [codepens/](codepens/README.md)
 
 An ink-wash **view-transition** story engine — monorepo. Pipeline:
 
@@ -31,8 +31,7 @@ An ink-wash **view-transition** story engine — monorepo. Pipeline:
 
 then open `/demo/index.html`, `/labs/scene-lab.html`, `/labs/bucket-lab.html`.
 
-**Docs** — start at [docs/reusable-components-extraction-map.md](docs/reusable-components-extraction-map.md)
-(the module map; every extraction verdict). Generalization gate:
-[docs/generalization-report.md](docs/generalization-report.md).
+**Docs** — start at [docs/README.md](docs/README.md) — the index:
+quickstart → API → architecture → history.
 
 **License** — MIT, see [LICENSE](LICENSE).

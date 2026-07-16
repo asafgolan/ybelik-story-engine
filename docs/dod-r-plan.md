@@ -1,3 +1,5 @@
+> STATUS: EXECUTED · DOD-R sealed via PR #9 + tag engine-2.0-layout (2026-07-06) · canonical now: the repo layout itself + the root README table
+
 # DOD-R — Restructure Gate (flat root → packages/)
 ### ybelik-story-engine · plan + move map · [CC] executes · [ASAF] verifies · ⛔ = STOP
 

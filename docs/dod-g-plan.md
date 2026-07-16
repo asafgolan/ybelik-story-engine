@@ -1,3 +1,5 @@
+> STATUS: EXECUTED · DOD-G PASS 2026-07-06 (commit dfee47e) · canonical now: generalization-report.md (the verdict) + the shipped pipeline stages
+
 # DOD-G — Generalization Gate
 ### ybelik-story-engine · plan + checklist · gates the Phase-1 publish
 
