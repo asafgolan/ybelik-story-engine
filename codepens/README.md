@@ -68,6 +68,9 @@ URLs of the pre-compiled demo scenes; `new ScenePlayer(stage, story, {onSceneCha
 `await player.ready`; prev/next buttons → `player.next()`/`player.prev()`. Note: scene-player
 **fetches** assets, so a pen needs the jsDelivr-GH route (200/CORS proven).
 
+### tracer-pen.html ✅ (recipe, built — browser lane, #38)
+Zero-server BYO-image: `vtracer-wasm@0.1.0` (jsDelivr, ESM+WASM pair) + `@ybelik/scene-compiler@0.1.0` + `@ybelik/reveal-engine@0.1.0` (unpkg). The auto-tune ladder from `trace_scene.py`, ported (~15 lines); ⚠ `colorPrecision` inverted in the wasm wrapper — policy `cp8` is passed as `0` (mapping documented in the pen source). Input normalized to ≤1024px. Nothing uploads; the visitor's device pays the CPU. Pen URL: *(added post-save)*.
+
 ### shell-pen.html ✅ (recipe, built)
 Load order adds `ScrollTrigger`. Wire a tall scroll section: `new ScrollEngagement({trigger,
 exitSelector, seam:{entry:800,exit:600}, onEngage:()=>player.goTo(0), …})`, `new GestureNavigator({
