@@ -1,0 +1,140 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>ybelik · browser tracer — bring your own image</title>
+<style>
+:root{ --paper:#f3ece0; --ink:#14110E; --ink2:#201B16; --line:#3A332B;
+       --fg:#E9E2D4; --mist:#9A9284; --mist2:#C6BEAF; --shu:#C0432B;
+       --mono:'JetBrains Mono',ui-monospace,Menlo,monospace; --serif:'Spectral',Georgia,serif; }
+*{box-sizing:border-box} html,body{margin:0}
+body{ background:var(--ink); color:var(--fg); font-family:var(--serif);
+      line-height:1.5; -webkit-font-smoothing:antialiased; padding:clamp(16px,2.5vw,34px); }
+header{ margin-bottom:16px }
+h1{ font-size:20px; font-weight:400; letter-spacing:.04em; margin:0 0 6px }
+h1 b{ font-weight:600; color:var(--shu) }
+.sub{ font-family:var(--mono); font-size:11px; color:var(--mist); line-height:1.7; max-width:76ch }
+.sub code{ color:var(--mist2) }
+.stage{ position:relative; height:min(58vh,540px); background:var(--paper); border-radius:3px;
+        overflow:hidden; box-shadow:0 1px 0 rgba(255,255,255,.12), 0 22px 44px -22px rgba(0,0,0,.8);
+        display:flex; align-items:center; justify-content:center; }
+.stage.drag{ outline:2px dashed var(--shu); outline-offset:-8px }
+.stage svg{ width:100%; height:100%; display:block; object-fit:contain }
+.rp{ opacity:0 }                       /* base rule — reveal-engine drives opacity */
+.empty{ font-family:var(--mono); font-size:12px; color:#6b6455; text-align:center; padding:0 20px }
+.empty b{ color:#8a5340 }
+.controls{ display:flex; flex-wrap:wrap; align-items:center; gap:14px 22px; margin-top:16px;
+           font-family:var(--mono); font-size:12px; color:var(--mist2);
+           background:var(--ink2); border:1px solid var(--line); border-radius:3px; padding:14px 18px; }
+.controls label{ display:flex; align-items:center; gap:8px }
+input[type=file]{ font-family:var(--mono); font-size:11px; color:var(--mist); max-width:220px }
+button{ font-family:var(--mono); font-size:12px; background:var(--shu); color:#fff;
+        border:1px solid var(--shu); border-radius:3px; padding:6px 16px; cursor:pointer; letter-spacing:.06em }
+button:hover{ background:#a93a25 } button:disabled{ opacity:.4; cursor:default }
+.readout{ margin-left:auto; text-align:right; line-height:1.8; color:var(--mist) }
+.readout b{ color:var(--mist2); font-weight:600 }
+.readout .flag{ color:var(--shu) }
+</style>
+
+<header>
+  <h1><b>ybelik</b> · browser tracer — bring your own image</h1>
+  <p class="sub">The whole pipeline on your device, no server anywhere: your image is traced by
+  <code>vtracer</code> (Rust→WASM), auto-tuned down a <code>layer_difference</code> ladder until the
+  path count lands in the jank-safe band, bucketed by <code>@ybelik/scene-compiler</code>, and painted
+  light-to-dark by <code>@ybelik/reveal-engine</code>. Nothing is uploaded — the file never leaves this page.</p>
+</header>
+
+<div class="stage" id="stage">
+  <div class="empty" id="empty"><b>drop an image here</b> (or use the file picker below)<br>
+  jpg / png / webp · it becomes an ink-wash-style reveal, entirely in your browser</div>
+</div>
+
+<div class="controls">
+  <label>image <input type="file" id="file" accept="image/*"></label>
+  <button id="replay" disabled>trace + reveal again</button>
+  <div class="readout" id="readout">&#8212;</div>
+</div>
+
+<script src="https://unpkg.com/@ybelik/scene-compiler@0.1.0/scene-compiler.js"></script>
+<script src="https://unpkg.com/@ybelik/reveal-engine@0.1.0/reveal-engine.js"></script>
+<script type="module">
+import init, { to_svg } from 'https://cdn.jsdelivr.net/npm/vtracer-wasm@0.1.0/vtracer.js';
+const ready = init({ module_or_path: 'https://cdn.jsdelivr.net/npm/vtracer-wasm@0.1.0/vtracer.wasm' });
+
+/* policy — mirrors trace_scene.py DEFAULT_POLICY (test-corpus/TRACE-SETTINGS.md).
+   MAPPING NOTE: vtracer-wasm's colorPrecision is inverted vs the vtracer CLI
+   (raw is_same_color_a); policy cp8 is therefore passed as 0. */
+const POLICY = { cp: 8, ladder: [8, 16, 24, 32, 48, 64], band: [1500, 3500], maxPx: 1024 };
+const wasmCfg = (ld) => ({ binary: false, mode: 'spline', hierarchical: 'stacked',
+  cornerThreshold: 60, lengthThreshold: 4, maxIterations: 10, spliceThreshold: 45,
+  filterSpeckle: 4, colorPrecision: 8 - POLICY.cp, layerDifference: ld, pathPrecision: 3 });
+
+const stage = document.getElementById('stage');
+const empty = document.getElementById('empty');
+const readout = document.getElementById('readout');
+const replayBtn = document.getElementById('replay');
+let lastImageData = null, raf = 0;
+
+function toImageData(img){                      // normalize to <= maxPx (declared deviation)
+  const s = Math.min(1, POLICY.maxPx / Math.max(img.width, img.height));
+  const w = Math.max(1, Math.round(img.width * s)), h = Math.max(1, Math.round(img.height * s));
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  c.getContext('2d').drawImage(img, 0, 0, w, h);
+  return c.getContext('2d').getImageData(0, 0, w, h);
+}
+
+function trace(id){                             // the auto-tune ladder (trace_scene.py, ported)
+  let li = POLICY.ladder.indexOf(32), tried = [], svg, paths, flag = '';
+  for (let i = 0; i < 4; i++) {
+    svg = to_svg(new Uint8Array(id.data.buffer.slice(0)), id.width, id.height, wasmCfg(POLICY.ladder[li]));
+    paths = (svg.match(/<path/g) || []).length;
+    tried.push('ld' + POLICY.ladder[li] + '=' + paths);
+    if (paths < POLICY.band[0] && li > 0) { li--; continue; }
+    if (paths > POLICY.band[1] && li < POLICY.ladder.length - 1) { li++; continue; }
+    break;
+  }
+  if (paths < POLICY.band[0] && li === 0) flag = 'chunky-by-content';
+  if (paths > POLICY.band[1] && li === POLICY.ladder.length - 1) flag = 'over-ceiling';
+  return { svg, paths, cell: 'cp8/ld' + POLICY.ladder[li], tried, flag };
+}
+
+async function run(id){
+  await ready;
+  empty.style.display = 'none';
+  readout.innerHTML = 'tracing&#8230;';
+  await new Promise(r => setTimeout(r, 30));    // let the readout paint before the CPU burst
+  cancelAnimationFrame(raf);
+  const t0 = performance.now();
+  const t = trace(id);
+  const traceMs = (performance.now() - t0).toFixed(0);
+  const t1 = performance.now();
+  const compiled = SceneCompiler.compileScene(t.svg, { seed: 42 });
+  const compileMs = (performance.now() - t1).toFixed(0);
+  stage.innerHTML = compiled;
+  const engine = new RevealEngine(stage);
+  readout.innerHTML = '<b>' + t.cell + '</b> &#183; <b>' + t.paths + '</b> paths &#183; <b>' +
+    engine.bucketCount + '</b> buckets' + (t.flag ? ' &#183; <span class="flag">' + t.flag + '</span>' : '') +
+    '<br>trace <b>' + traceMs + 'ms</b> &#183; compile <b>' + compileMs + 'ms</b> &#183; ladder: ' + t.tried.join(' ');
+  replayBtn.disabled = false;
+  if (RevealEngine.reducedMotion) { engine.fill(); return; }
+  engine.clear();
+  const start = performance.now(), DUR = 1600;
+  (function tick(now){
+    const p = Math.min(1, (now - start) / DUR);
+    engine.setLevel(-1 + p * 100);
+    if (p < 1) raf = requestAnimationFrame(tick);
+  })(start);
+}
+
+function loadFile(file){
+  if (!file || !file.type.startsWith('image/')) return;
+  const img = new Image();
+  img.onload = () => { lastImageData = toImageData(img); URL.revokeObjectURL(img.src); run(lastImageData); };
+  img.src = URL.createObjectURL(file);
+}
+
+document.getElementById('file').addEventListener('change', e => loadFile(e.target.files[0]));
+replayBtn.addEventListener('click', () => lastImageData && run(lastImageData));
+stage.addEventListener('dragover', e => { e.preventDefault(); stage.classList.add('drag'); });
+stage.addEventListener('dragleave', () => stage.classList.remove('drag'));
+stage.addEventListener('drop', e => { e.preventDefault(); stage.classList.remove('drag');
+  loadFile(e.dataTransfer.files[0]); });
+</script>
