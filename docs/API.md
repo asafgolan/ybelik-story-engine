@@ -1,7 +1,7 @@
 # API — the full parameter surface
 
-Pinned to source @ `main` `ce8d28e` (2026-07-16). Six functions, two CLIs, one
-endpoint, two extension seams, one hard contract.
+Pinned to source @ `main` (2026-07-16; tracer updated same day). Seven functions, two
+CLIs, one endpoint, two extension seams, one hard contract.
 
 ## The one hard contract
 
@@ -9,32 +9,38 @@ endpoint, two extension seams, one hard contract.
 compiler (both languages) and `reveal-engine`. The `buckets` option accepts 2..100;
 the runtime discovers the count from the SVG.
 
-## Build time — Python (`packages/scene-compiler/`)
+## Build time — the tracer (`@ybelik/scene-tracer` · JS · browser + Node)
 
-### `trace_scene(image_path, policy=None, out_svg=None) → (svg_text, chosen_settings)`
+### `initTracer({ glue, wasm }) → Promise<Tracer>` · `tracer.traceScene(rgba, width, height, { policy? }) → { svg, settings }`
 
-Deterministic auto-tuner: image → traced SVG, converging on a jank-safe path budget
-in 2–4 trace/audit cycles. Writes a `.settings.json` sidecar next to the output
-(settings-are-data: the reproduction recipe).
+Deterministic auto-tuner: RGBA in, traced SVG (with `viewBox`) + a settings object out,
+converging on a jank-safe path budget in 2–4 trace cycles. Wiring is injected —
+`glue` is the imported `wasm_vtracer` glue module, `wasm` is the binary's bytes or URL —
+so the same core runs in the browser and in Node. The CLI writes the settings object as
+a `.settings.json` sidecar (settings-are-data: the reproduction recipe). Succeeded the
+Python `trace_scene.py` 2026-07-16 with CLI-parity proven on real photographic input.
 
-`DEFAULT_POLICY` (override any key via the `policy` dict — this is an extension seam):
+`DEFAULT_POLICY` (override any key via `{ policy }` — this is an extension seam):
 
 | key | default | meaning |
 |---|---|---|
 | `color_precision` | `8` | pinned — the quality/tonal-layering axis |
 | `ld_ladder` | `[8, 16, 24, 32, 48, 64]` | `layer_difference` steps the tuner walks |
-| `target_paths` | `(1500, 3500)` | the jank-safe band |
+| `target_paths` | `[1500, 3500]` | the jank-safe band |
 | `max_kb` | `2048` | weight ceiling |
-| `downscale_px` | `1024` | one downscale retry when still heavy at ld64 |
+| `downscale_px` | `1024` | one downscale retry when still heavy |
 
 Flags vocabulary (features, not failures): `band-edge` (converged at a ladder edge) ·
 `over-ceiling` (still heavy after the downscale retry) · `chunky-by-content` (still
 sparse at ld8 — the content is genuinely sparse).
 
-CLI: `python3 packages/scene-compiler/trace_scene.py image.png out.svg [--min N --max N --max-kb N]`
+CLI: `npx @ybelik/scene-tracer image.png out.svg [--min N --max N --max-kb N]`
+Browser wiring (no build step): the package README shows the two-import jsDelivr pattern.
 
 The numbers' home — policy rationale, acceptance criteria, the locked cell and the
 measured ceiling: [TRACE-SETTINGS.md](../test-corpus/TRACE-SETTINGS.md).
+
+## Build time — Python (`packages/scene-compiler/`)
 
 ### `compile_scene(svg_text, sort='luminance', direction='light-to-dark', buckets=MAX_BUCKETS, jitter=8, seed=None) → svg_text`
 
@@ -129,7 +135,7 @@ Surface: `.ready` (promise) · `.goTo(i)` · `.next()` / `.prev()` ·
 
 - **`SORT_KEYS`** (compiler, both languages) — register a sort key `fn(pathTag) → number`;
   `'luminance'` is the sole registered key today.
-- **`POLICY`** (`trace_scene`) — pass a policy dict to override any `DEFAULT_POLICY` key.
+- **`POLICY`** (`scene-tracer`) — pass `{ policy }` to `traceScene` to override any `DEFAULT_POLICY` key.
 
 Load orders per package: the package READMEs (their home). Pipeline overview: the
 [root README](../README.md).

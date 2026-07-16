@@ -4,7 +4,7 @@
 Completes the pipeline the extraction map opened with `TRACE (GAP)`. Stage 0 of
 `generate → trace → compile → reveal` (the pipeline's home: the
 [root README](../../README.md)) — this worker is the GENERATE stage, feeding
-`trace_scene.py`.
+`@ybelik/scene-tracer`.
 
 The user no longer brings an image; they bring a **style + subject**. Prompt
 engineering lives server-side in `styles.js` (the registry — same pattern as
