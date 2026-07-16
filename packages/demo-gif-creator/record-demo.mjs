@@ -1,6 +1,6 @@
 // record-demo.mjs — records demo/index.html -> WebM for the README GIF (#34).
 // Run from repo root with a server on :8000 (`python3 -m http.server 8000`).
-// Deps: scripts/package.json (npm install once). Re-record = re-run this file.
+// Deps: packages/demo-gif-creator/package.json (npm install once). Re-record = re-run this file.
 import { chromium } from 'playwright';
 
 const browser = await chromium.launch();

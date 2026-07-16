@@ -1,6 +1,6 @@
 // make-gif.mjs — WebM -> optimized README GIF, all binaries npm-local (no system tools).
 // Canonical ffmpeg palettegen/paletteuse chain + gifsicle -O3.
-// Usage (from repo root): node scripts/make-gif.mjs <capture.webm> [--colors N] [--fps N]
+// Usage (from repo root): node packages/demo-gif-creator/make-gif.mjs <capture.webm> [--colors N] [--fps N]
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, statSync } from 'node:fs';
 import ffmpegPath from 'ffmpeg-static';
@@ -8,7 +8,7 @@ import gifsiclePath from 'gifsicle';
 
 const args = process.argv.slice(2);
 const webm = args[0];
-if (!webm) { console.error('usage: node scripts/make-gif.mjs <capture.webm> [--colors N] [--fps N]'); process.exit(2); }
+if (!webm) { console.error('usage: node packages/demo-gif-creator/make-gif.mjs <capture.webm> [--colors N] [--fps N]'); process.exit(2); }
 const opt = (name, dflt) => { const i = args.indexOf(name); return i === -1 ? dflt : args[i + 1]; };
 const colors = opt('--colors', '128');
 const fps = opt('--fps', '12');
