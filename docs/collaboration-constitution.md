@@ -1,3 +1,7 @@
+**REFERENCE COPY** — the canonical Collaboration Constitution lives with the user;
+edits happen there first, then propagate here. Executor operational copies: root
+`CLAUDE.md` (Ybelik overlay) + `~/.claude/CLAUDE.md` (global digest).
+
 # Collaboration Constitution — Global Layer (v1)
 
 Canonical copy owned by the user. Every project's instructions begin with this layer.
