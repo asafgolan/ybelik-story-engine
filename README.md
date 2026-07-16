@@ -4,6 +4,8 @@
 
 **live pens:** [live compile](https://codepen.io/asafgolan/pen/ZYLrzQO) · [bucket reveal](https://codepen.io/asafgolan/pen/MYJQgKy) · [scene player](https://codepen.io/asafgolan/pen/QwdQLyW) · [full shell](https://codepen.io/asafgolan/pen/bNgLbVP) · [all pens](https://codepen.io/asafgolan/pen/JoEpPGr) — index & recipes: [codepens/](codepens/README.md)
 
+![ybelik ink-wash reveal — the four-stage pipeline painting a scene](docs/assets/demo.gif)
+
 An ink-wash **view-transition** story engine — monorepo. Pipeline:
 
     generate → trace → compile → reveal
