@@ -20,6 +20,8 @@ Binding: `vtracer.convert_image_to_svg_py(image_path, out_path, **opts)`.
 
 ## Baseline settings (apply to every Corpus-A trace unless the sweep says otherwise)
 
+> Baseline = the sweep's starting values (historical; the `color_precision 6` below is superseded). Production pins `color_precision = 8` — see LOCKED POLICY above and `DEFAULT_POLICY` in `packages/scene-compiler/trace_scene.py`.
+
 | opt | value |
 |-----|-------|
 | colormode | `color` |

@@ -1,12 +1,10 @@
 # generate/ — pipeline stage 0
 ### text intent → styled raster · Cloudflare Workers AI · flux-1-schnell (Apache-2.0 outputs)
 
-Completes the pipeline the extraction map opened with `TRACE (GAP)`:
-
-```
-GENERATE (this) → trace_scene → compile_scene → runtime
-   intent            auto-tune      buckets        paints
-```
+Completes the pipeline the extraction map opened with `TRACE (GAP)`. Stage 0 of
+`generate → trace → compile → reveal` (the pipeline's home: the
+[root README](../../README.md)) — this worker is the GENERATE stage, feeding
+`trace_scene.py`.
 
 The user no longer brings an image; they bring a **style + subject**. Prompt
 engineering lives server-side in `styles.js` (the registry — same pattern as
