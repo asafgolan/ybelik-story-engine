@@ -1,3 +1,5 @@
+> STATUS: EXECUTED · shipped via PR #22 (2026-07-07) · canonical now: packages/scene-compiler/scene-compiler.js + its README on npm; this kit's FILE 1–4 are the historical source
+
 # SCENE-COMPILER JS PORT · KIT
 ### @ybelik/scene-compiler v0.1.0 · analyzer pass 2026-07-07 · source: compile_scene.py @ main (read in full)
 ### **PRE-PROVEN in the analyzer sandbox: 5/5 byte-parity vs the Python oracle on first run, + depth-2 parity + seed checks**

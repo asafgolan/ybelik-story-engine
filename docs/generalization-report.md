@@ -1,3 +1,5 @@
+> STATUS: SEALED VERDICT · recorded 2026-07-06 · remains the home of the claims-of-record (the GG3 envelope, in the words it was proved in); the live pitch evolves at the root README, never here
+
 # DOD-G — Generalization Report
 ### ybelik-story-engine · the generalization gate · **VERDICT: PASS**
 recorded 2026-07-06 · branch `feature/generalization-gate`

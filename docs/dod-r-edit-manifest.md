@@ -1,3 +1,5 @@
+> STATUS: EXECUTED · consumed by PR #9 (engine-2.0-layout, 2026-07-06) · canonical now: the shipped files; this is the record of how they moved
+
 # DOD-R · EDIT MANIFEST — implementation-grade companion to docs/dod-r-plan.md
 ### Harvested from disk 2026-07-06 by the analyzer (Opus). Executor: Claude Code on a simpler model.
 
