@@ -68,6 +68,9 @@ URLs of the pre-compiled demo scenes; `new ScenePlayer(stage, story, {onSceneCha
 `await player.ready`; prev/next buttons → `player.next()`/`player.prev()`. Note: scene-player
 **fetches** assets, so a pen needs the jsDelivr-GH route (200/CORS proven).
 
+### tracer-pen.html ✅ (recipe, built — browser lane, #38)
+Zero-server BYO-image: `@ybelik/scene-tracer@0.1.0` (the published trace stage — auto-tune ladder, flags, viewBox; wraps `wasm_vtracer@0.2.0`, CLI-parity verified on a real photo, evidence on #38) + `@ybelik/scene-compiler@0.1.0` + `@ybelik/reveal-engine@0.1.0` (unpkg). Input normalized to ≤1024px; a 1024px photo traces in ~2–3 s per ladder step, on the visitor's device. Nothing uploads. Pen URL: *(added post-save)*.
+
 ### shell-pen.html ✅ (recipe, built)
 Load order adds `ScrollTrigger`. Wire a tall scroll section: `new ScrollEngagement({trigger,
 exitSelector, seam:{entry:800,exit:600}, onEngage:()=>player.goTo(0), …})`, `new GestureNavigator({

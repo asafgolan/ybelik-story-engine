@@ -22,6 +22,9 @@ byte-preserved history (ADR doctrine: status-marked, never deleted, never moved)
 - [dod-r-edit-manifest.md](dod-r-edit-manifest.md) — DOD-R implementation-grade manifest
 - [scene-compiler-js-kit.md](scene-compiler-js-kit.md) — the JS port kit, shipped as `@ybelik/scene-compiler`
 - [docs-audit-kit.md](docs-audit-kit.md) — this consolidation's own kit (D0)
+- [readme-gif-kit.md](readme-gif-kit.md) — the README demo GIF kit (v2, PR #42)
+- [tracer-pen-kit.md](tracer-pen-kit.md) — the browser tracer pen kit + its three orders (PR #43, #38)
+- [scene-tracer-kit.md](scene-tracer-kit.md) — the @ybelik/scene-tracer package kit (PR #45)
 
 ## Adjacent
 
