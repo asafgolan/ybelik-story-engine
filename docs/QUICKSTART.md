@@ -72,3 +72,6 @@ or serve the repo (`python3 -m http.server 8000`) and walk it in `/labs/scene-la
 
 **No image at all?** Bring intent instead — a style + a subject. That's pipeline
 stage 0: [packages/generate](../packages/generate/README.md).
+
+**No installs at all?** The [browser tracer pen](https://codepen.io/asafgolan/pen/ZYLRGNb)
+runs this whole lane in your browser — drop a photo, nothing uploads.
