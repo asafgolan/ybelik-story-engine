@@ -1,4 +1,4 @@
-> STATUS: EXECUTED · closed in the DOD-G PASS 2026-07-06 (dfee47e) · canonical now: packages/scene-compiler/trace_scene.py (the shipped tuner) + test-corpus/TRACE-SETTINGS.md (the policy)
+> STATUS: EXECUTED · closed in the DOD-G PASS 2026-07-06 (dfee47e) · canonical now: @ybelik/scene-tracer (the shipped tuner — JS, succeeded the Python original 2026-07-16) + test-corpus/TRACE-SETTINGS.md (the policy)
 
 # DOD-G — Part 2 · Handover
 ### ybelik-story-engine · branch `feature/generalization-gate` · continues `dod-g-plan.md`

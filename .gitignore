@@ -83,3 +83,4 @@ test-corpus/compiled/a5-photo-*
 test-corpus/story-gen.photos.json
 
 packages/demo-gif-creator/node_modules/
+packages/scene-tracer/node_modules/

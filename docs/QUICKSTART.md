@@ -48,12 +48,11 @@ are the [live pens](../codepens/README.md).
 ```bash
 git clone https://github.com/asafgolan/ybelik-story-engine.git
 cd ybelik-story-engine
-pip install vtracer
-python3 packages/scene-compiler/trace_scene.py your-image.jpg your-scene.svg
+npx @ybelik/scene-tracer your-image.jpg your-scene.svg
 python3 packages/scene-compiler/compile_scene.py your-scene.svg --out your-scene.compiled.svg --seed 42
 ```
 
-`trace_scene` auto-tunes the trace for you — `color_precision` pinned at 8 (the quality
+`scene-tracer` auto-tunes the trace for you — `color_precision` pinned at 8 (the quality
 axis), `layer_difference` walked down a ladder until the path count lands in the
 jank-safe band — and prints the chosen cell, the ladder it walked, and any flag.
 A `.settings.json` sidecar lands next to the trace: the full reproduction recipe.

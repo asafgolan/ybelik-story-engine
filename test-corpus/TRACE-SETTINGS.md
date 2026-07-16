@@ -7,7 +7,7 @@ Binding: `vtracer.convert_image_to_svg_py(image_path, out_path, **opts)`.
 
 - **`color_precision = 8` — pinned.** It is the quality axis (tonal layering →
   soft edges). Lower values chunk soft content.
-- **`layer_difference` — auto-tuned per asset** by `trace_scene.py` (ladder
+- **`layer_difference` — auto-tuned per asset** by `@ybelik/scene-tracer` (ladder
   `[8,16,24,32,48,64]`), because path count is content-driven, so no fixed
   cell scales. cp buys softness; ld trims weight cheaply.
 - **Pines demo cell (locked): `cp8 / ld32`** — 2,096 paths · 1.6 MB · ~880 ms
@@ -20,7 +20,7 @@ Binding: `vtracer.convert_image_to_svg_py(image_path, out_path, **opts)`.
 
 ## Baseline settings (apply to every Corpus-A trace unless the sweep says otherwise)
 
-> Baseline = the sweep's starting values (historical; the `color_precision 6` below is superseded). Production pins `color_precision = 8` — see LOCKED POLICY above and `DEFAULT_POLICY` in `packages/scene-compiler/trace_scene.py`.
+> Baseline = the sweep's starting values (historical; the `color_precision 6` below is superseded). Production pins `color_precision = 8` — see LOCKED POLICY above and `DEFAULT_POLICY` in `packages/scene-tracer/scene-tracer.js`.
 
 | opt | value |
 |-----|-------|
