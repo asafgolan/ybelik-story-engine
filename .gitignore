@@ -81,3 +81,5 @@ test-corpus/compiled/a4-photo-*
 test-corpus/compiled/a5-photo-*
 # local-only walk that includes the photo specimens (committed story-gen.json omits them)
 test-corpus/story-gen.photos.json
+
+scripts/node_modules/
