@@ -56,16 +56,24 @@ button:hover{ background:#a93a25 } button:disabled{ opacity:.4; cursor:default }
 <script src="https://unpkg.com/@ybelik/scene-compiler@0.1.0/scene-compiler.js"></script>
 <script src="https://unpkg.com/@ybelik/reveal-engine@0.1.0/reveal-engine.js"></script>
 <script type="module">
-import init, { to_svg } from 'https://cdn.jsdelivr.net/npm/vtracer-wasm@0.1.0/vtracer.js';
-const ready = init({ module_or_path: 'https://cdn.jsdelivr.net/npm/vtracer-wasm@0.1.0/vtracer.wasm' });
+import * as vt from 'https://cdn.jsdelivr.net/npm/wasm_vtracer@0.2.0/wasm_vtracer_bg.js';
+const WASM_URL = 'https://cdn.jsdelivr.net/npm/wasm_vtracer@0.2.0/wasm_vtracer_bg.wasm';
+const ready = fetch(WASM_URL).then(r => r.arrayBuffer())
+  .then(b => WebAssembly.instantiate(b, { './wasm_vtracer_bg.js': vt }))
+  .then(({ instance }) => { vt.__wbg_set_wasm(instance.exports); instance.exports.__wbindgen_start(); });
 
 /* policy — mirrors trace_scene.py DEFAULT_POLICY (test-corpus/TRACE-SETTINGS.md).
-   MAPPING NOTE: vtracer-wasm's colorPrecision is inverted vs the vtracer CLI
-   (raw is_same_color_a); policy cp8 is therefore passed as 0. */
+   wasm_vtracer maps colorPrecision identically to the vtracer CLI — verified CLI-parity
+   on a real photo: same path count, same rendered result (advisor sandbox, 2026-07-16). */
 const POLICY = { cp: 8, ladder: [8, 16, 24, 32, 48, 64], band: [1500, 3500], maxPx: 1024 };
-const wasmCfg = (ld) => ({ binary: false, mode: 'spline', hierarchical: 'stacked',
-  cornerThreshold: 60, lengthThreshold: 4, maxIterations: 10, spliceThreshold: 45,
-  filterSpeckle: 4, colorPrecision: 8 - POLICY.cp, layerDifference: ld, pathPrecision: 3 });
+function makeCfg(ld){
+  const c = new vt.TracerConfig();
+  c.setColorMode(0); c.setHierarchical(0); c.setPathSimplifyMode(1);
+  c.setFilterSpeckle(4); c.setColorPrecision(POLICY.cp); c.setLayerDifference(ld);
+  c.setCornerThreshold(60); c.setLengthThreshold(4); c.setSpliceThreshold(45);
+  c.setPathPrecision(3);
+  return c;                       // fresh config per call — the wasm consumes it
+}
 
 const stage = document.getElementById('stage');
 const empty = document.getElementById('empty');
@@ -82,9 +90,10 @@ function toImageData(img){                      // normalize to <= maxPx (declar
 }
 
 function trace(id){                             // the auto-tune ladder (trace_scene.py, ported)
+  const bytes = new Uint8Array(id.data.buffer.slice(0));
   let li = POLICY.ladder.indexOf(32), tried = [], svg, paths, flag = '';
   for (let i = 0; i < 4; i++) {
-    svg = to_svg(new Uint8Array(id.data.buffer.slice(0)), id.width, id.height, wasmCfg(POLICY.ladder[li]));
+    svg = vt.convertImageToSvg(bytes, id.width, id.height, makeCfg(POLICY.ladder[li]));
     paths = (svg.match(/<path/g) || []).length;
     tried.push('ld' + POLICY.ladder[li] + '=' + paths);
     if (paths < POLICY.band[0] && li > 0) { li--; continue; }
@@ -105,8 +114,10 @@ async function run(id){
   const t0 = performance.now();
   const t = trace(id);
   const traceMs = (performance.now() - t0).toFixed(0);
+  const withBox = t.svg.includes('viewBox') ? t.svg
+    : t.svg.replace('<svg', '<svg viewBox="0 0 ' + id.width + ' ' + id.height + '"');
   const t1 = performance.now();
-  const compiled = SceneCompiler.compileScene(t.svg, { seed: 42 });
+  const compiled = SceneCompiler.compileScene(withBox, { seed: 42 });
   const compileMs = (performance.now() - t1).toFixed(0);
   stage.innerHTML = compiled;
   const engine = new RevealEngine(stage);

@@ -69,7 +69,7 @@ URLs of the pre-compiled demo scenes; `new ScenePlayer(stage, story, {onSceneCha
 **fetches** assets, so a pen needs the jsDelivr-GH route (200/CORS proven).
 
 ### tracer-pen.html ✅ (recipe, built — browser lane, #38)
-Zero-server BYO-image: `vtracer-wasm@0.1.0` (jsDelivr, ESM+WASM pair) + `@ybelik/scene-compiler@0.1.0` + `@ybelik/reveal-engine@0.1.0` (unpkg). The auto-tune ladder from `trace_scene.py`, ported (~15 lines); ⚠ `colorPrecision` inverted in the wasm wrapper — policy `cp8` is passed as `0` (mapping documented in the pen source). Input normalized to ≤1024px. Nothing uploads; the visitor's device pays the CPU. Pen URL: *(added post-save)*.
+Zero-server BYO-image: `wasm_vtracer@0.2.0` (jsDelivr, manual-instantiate ESM+WASM — CLI-parity verified on a real photo: identical path count and render vs the vtracer CLI) + `@ybelik/scene-compiler@0.1.0` + `@ybelik/reveal-engine@0.1.0` (unpkg). The auto-tune ladder from `trace_scene.py`, ported; `colorPrecision` maps 1:1 (the earlier `vtracer-wasm@0.1.0` wrapper had inverted mapping AND a photo-stacking defect — swapped out, evidence on #38). Input normalized to ≤1024px; a 1024px photo traces in ~2–3 s per ladder step, on the visitor's device. Nothing uploads. Pen URL: *(added post-save)*.
 
 ### shell-pen.html ✅ (recipe, built)
 Load order adds `ScrollTrigger`. Wire a tall scroll section: `new ScrollEngagement({trigger,
