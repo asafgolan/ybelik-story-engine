@@ -1,0 +1,17 @@
+{
+  "name": "@ybelik/mcp-server",
+  "version": "0.1.0",
+  "description": "ybelik engine as an agent-callable MCP stdio server — deterministic scene tools; the calling agent is the judge",
+  "type": "module",
+  "main": "server.mjs",
+  "bin": { "ybelik-mcp-server": "server.mjs" },
+  "files": ["server.mjs", "README.md"],
+  "engines": { "node": ">=20" },
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "@resvg/resvg-js": "2.6.2",
+    "@ybelik/scene-compiler": "0.1.0",
+    "zod": "3.25.76"
+  }
+}
