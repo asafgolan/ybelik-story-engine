@@ -22,6 +22,7 @@ An ink-wash **view-transition** story engine — monorepo. Pipeline:
 | `packages/scene-compiler` | Module A: `compile_scene`, `audit_svg`, `oracle/`, `tests/` |
 | `packages/scene-tracer` | trace stage: `@ybelik/scene-tracer` — JS auto-tune tracer + CLI |
 | `packages/generate` | stage 0 — Cloudflare Workers AI client + worker |
+| `packages/mcp-server` | agent door: `@ybelik/mcp-server` — MCP stdio server (S1 entity tools + compile/audit) |
 | `packages/entity-engine` | engine #2 scaffold (developing in dev-quest) |
 | `demo/` | integrated proof: `index.html` + `story.json` + scenes |
 | `labs/` | `bucket-lab` (Module B gate) · `scene-lab` (Module C gate, `?story=` picks a descriptor) |
